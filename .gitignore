@@ -67,6 +67,7 @@ typings/
 
 # Output of Ionic/Capacitor
 android
+build
 
 # Yarn Integrity file
 .yarn-integrity
