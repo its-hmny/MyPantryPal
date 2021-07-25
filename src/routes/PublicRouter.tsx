@@ -42,8 +42,6 @@ const PublicRouter: React.FC = () => {
     [publicPages]
   );
 
-  console.log("BP__", publicRoutes, publicPages);
-
   // -----------------------------------------------------------------
   // R e n d e r   m e t h o d s
   // -----------------------------------------------------------------
