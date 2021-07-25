@@ -1,20 +1,19 @@
 // ------------------------------------------------------------------
 // I m p o r t s
 // ------------------------------------------------------------------
+import { useMemo } from "react";
+import { Redirect, Route } from "react-router";
 import {
   IonIcon,
+  IonTabs,
   IonLabel,
-  IonRouterOutlet,
-  IonTab,
   IonTabBar,
   IonTabButton,
-  IonTabs,
+  IonRouterOutlet,
 } from "@ionic/react";
-import { IonReactRouter } from "@ionic/react-router";
-import { Redirect, Route } from "react-router";
-import { ROUTES, ROUTE_KEYS } from "../data/enum";
 
 import PAGES from "../data/pages";
+import { ROUTES } from "../data/enum";
 
 /**
  * Component that initializes the Routes (and pages based upon the
@@ -24,14 +23,11 @@ import PAGES from "../data/pages";
  * @category Components
  * @subcategory Setup
  */
-const RouteInitializer: React.FC = ({ children }) => {
+const PrivateRouter: React.FC = () => {
   // -----------------------------------------------------------------
-  // L o c a l   v a r s
+  // L o c a l   v a r s   &   H o o k s
   // -----------------------------------------------------------------
-
-  // -----------------------------------------------------------------
-  // N a v i g a t i o n   v a r s
-  // -----------------------------------------------------------------
+  const { privatePages } = PAGES;
 
   // -----------------------------------------------------------------
   // S t a t e
@@ -40,6 +36,31 @@ const RouteInitializer: React.FC = ({ children }) => {
   // -----------------------------------------------------------------
   // W o r k i n g   m e t h o d s
   // -----------------------------------------------------------------
+  const privateRoutes = useMemo(
+    () =>
+      privatePages.map((page) => (
+        <Route
+          exact
+          key={page.key}
+          path={page.path}
+          component={page.component}
+        />
+      )),
+    [privatePages]
+  );
+
+  const tabBarButtons = useMemo(
+    () =>
+      privatePages
+        .filter((page) => !!page.icon)
+        .map((page) => (
+          <IonTabButton tab={page.key} href={page.path}>
+            <IonIcon icon={page.icon} />
+            <IonLabel>{page.path}</IonLabel>
+          </IonTabButton>
+        )),
+    [privatePages]
+  );
 
   // -----------------------------------------------------------------
   // R e n d e r   m e t h o d s
@@ -53,34 +74,14 @@ const RouteInitializer: React.FC = ({ children }) => {
   // T e m p l a t e
   // -----------------------------------------------------------------
   return (
-    <IonReactRouter>
-      <IonTabs>
-        <IonRouterOutlet>
-          {PAGES.map((page) => (
-            <Route
-              key={page.key}
-              exact={page.exact}
-              path={page.path}
-              component={() => (
-                <page.layout>
-                  <page.component />
-                </page.layout>
-              )}
-            />
-          ))}
-          
-        </IonRouterOutlet>
-        <IonTabBar slot="bottom">
-          {PAGES.filter((page) => page.auth).map((page) => (
-            <IonTabButton tab={page.key} href={page.path}>
-              <IonIcon icon={page.icon} />
-              <IonLabel>{page.path}</IonLabel>
-            </IonTabButton>
-          ))}
-        </IonTabBar>
-      </IonTabs>
-    </IonReactRouter>
+    <IonTabs>
+      <IonRouterOutlet>
+        {privateRoutes}
+        <Redirect exact from="/" to={ROUTES.HOME} />
+      </IonRouterOutlet>
+      <IonTabBar slot="bottom">{tabBarButtons}</IonTabBar>
+    </IonTabs>
   );
 };
 
-export default RouteInitializer;
+export default PrivateRouter;
