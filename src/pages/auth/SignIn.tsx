@@ -1,6 +1,7 @@
 // -----------------------------------------------------------------
 // I m p o r t s
 // -----------------------------------------------------------------
+import { IonPage } from "@ionic/react";
 import { useHistory } from "react-router";
 
 
@@ -42,10 +43,10 @@ const SignInView: React.FC = () => {
   // T e m p l a t e
   // -----------------------------------------------------------------
   return (
-    <>
+    <IonPage>
       <p>Welcome! This a placeholder (SignInView)</p>
       <p>{`You're currently on the route ${history.location.pathname}`}</p>
-    </>
+    </IonPage>
   );
 };
 

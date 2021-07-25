@@ -17,17 +17,15 @@ import { ROUTES, ROUTE_KEYS } from "./enum";
  */
 export interface Page {
   /** The route must be exactly right in order to be accessed */
-  exact: boolean;
+  //exact: boolean;
   /** The relative path of the route */
   path: ROUTES;
   /** The key or UUID that identifies uniquely the route (more human readable) */
   key: ROUTE_KEYS;
-  /** The route is accessible only by authenticated user? */
-  auth: boolean;
   /** The component to be mounted for that route */
   component: React.FC;
   /** The layout to be used for that route (TODO ?)*/
-  layout: React.FC;
+  //layout: React.FC;
   /** Optional icon for the Route in presence of link to it (e.g. Drawer/Tabs) */
   icon?: string;
   /** Nested route that extends the current one */
