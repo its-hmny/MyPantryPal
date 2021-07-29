@@ -15,7 +15,11 @@ export enum ROUTES {
   SIGN_UP = "/sign-up",
 
   // PRIVATE ROUTES
-  HOME = "/home",
+  DASHBOARD = "/dashboard",
+  MY_PANTRY = "/my-pantry",
+  GROCERIES_LIST = "/groceries-list",
+  PROFILE = "/profile",
+  SETTINGS = "/settings",
 }
 
 /**
@@ -25,11 +29,15 @@ export enum ROUTES {
  *
  * @category Enum
  */
- export enum ROUTE_KEYS {
-    // PUBLIC ROUTES
-    SIGN_IN = "sign-in",
-    SIGN_UP = "sign-up",
-  
-    // PRIVATE ROUTES
-    HOME = "home",
-  }
+export enum ROUTE_KEYS {
+  // PUBLIC ROUTES
+  SIGN_IN = "Sign In",
+  SIGN_UP = "Sign Up",
+
+  // PRIVATE ROUTES
+  DASHBOARD = "Dashboard",
+  MY_PANTRY = "My Pantry",
+  GROCERIES_LIST = "Groceries List",
+  PROFILE = "Profile",
+  SETTINGS = "Settings",
+}
