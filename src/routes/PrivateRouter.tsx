@@ -56,7 +56,7 @@ const PrivateRouter: React.FC = () => {
         .map((page) => (
           <IonTabButton tab={page.key} href={page.path}>
             <IonIcon icon={page.icon} />
-            <IonLabel>{page.path}</IonLabel>
+            <IonLabel>{page.key}</IonLabel>
           </IonTabButton>
         )),
     [privatePages]
@@ -77,7 +77,7 @@ const PrivateRouter: React.FC = () => {
     <IonTabs>
       <IonRouterOutlet>
         {privateRoutes}
-        <Redirect exact from="/" to={ROUTES.HOME} />
+        <Redirect exact from="/" to={ROUTES.DASHBOARD} />
       </IonRouterOutlet>
       <IonTabBar slot="bottom">{tabBarButtons}</IonTabBar>
     </IonTabs>

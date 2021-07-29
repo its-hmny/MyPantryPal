@@ -20,7 +20,7 @@ const RouteInitializer: React.FC = () => {
   // L o c a l   v a r s
   // -----------------------------------------------------------------
   // TODO ADD Authenticated user logic
-  const isLoggedIn = false;
+  const isLoggedIn = true;
 
   // -----------------------------------------------------------------
   // S t a t e
