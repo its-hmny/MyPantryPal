@@ -3,7 +3,7 @@
 // ------------------------------------------------------------------
 import { useMemo } from "react";
 import { Redirect, Route } from "react-router";
-import { IonPage, IonRouterOutlet } from "@ionic/react";
+import { IonRouterOutlet } from "@ionic/react";
 
 import PAGES from "../data/pages";
 import { ROUTES } from "../data/enum";

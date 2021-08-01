@@ -33,7 +33,7 @@ export interface Page {
 }
 
 /**
- * Interface that representa the data TODO
+ * Interface that representa the data avaiable for an authenticated user
  *
  * @interface
  * @alias AuthUser
@@ -41,7 +41,7 @@ export interface Page {
  * @category Interface
  * @subcategory General
  */
- export interface AuthUser {
+export interface AuthUser {
   /** Since the field is not required could be null (fallback to username) */
   firstname?: string;
   /** Since the field is not required could be null (fallback to username) */
@@ -55,7 +55,7 @@ export interface Page {
 }
 
 /**
- * Interface that representa the data TODO
+ * Interface that representa the data avaiable for every product in the user Pantry
  *
  * @interface
  * @alias Product

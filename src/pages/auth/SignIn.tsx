@@ -41,6 +41,15 @@ const SignInView: React.FC = () => {
   // -----------------------------------------------------------------
   // W o r k i n g   m e t h o d s
   // -----------------------------------------------------------------
+  /**
+   * This method handles the authentication of an already registred user
+   * The main part of the is offloaded to the AuthProvider and upon successfull
+   * completion the method handles the redirect to the Dashboard view 
+   * @function
+   * @async
+   * 
+   * @param {FormPayload} data - The data coming straight from the form
+   */
   const handleSubmit = async (data: FormPayload) => {
     await authenticateUser(data);
     history.push(ROUTES.DASHBOARD);

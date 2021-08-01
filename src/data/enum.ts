@@ -42,6 +42,13 @@ export enum ROUTE_KEYS {
   SETTINGS = "Settings",
 }
 
+/**
+ * Enum possible error message to be showed to the user
+ * @enum {string}
+ * @alias Errors
+ *
+ * @category Enum
+ */
 export enum ERRORS {
   REQURED_DATA = "Some required fields are empty, plase fill them up",
   LOGIN_ERROR = "There was an error and we couldn't complete the login.\nPlease check your credentials",

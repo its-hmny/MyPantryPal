@@ -8,8 +8,6 @@ import { FormPayload } from "../components/RegistrerForm";
 import { AuthUser } from "../data/interfaces";
 import { getAuthUser, signIn } from "../utils/WebService";
 import { readFromStorage } from "../utils/Storage";
-import { ROUTES } from "../data/enum";
-import { useHistory } from "react-router";
 
 // ------------------------------------------------------------------
 // I n t e r f a c e s
@@ -37,7 +35,7 @@ export const AuthProvider: React.FC = ({ children }) => {
   // -----------------------------------------------------------------
   // L o c a l   v a r s
   // -----------------------------------------------------------------
-  // Temporary data used if no data is avaiable
+  // Temporary data used if no data is avaiable or the data has expired
   const defaultData = {
     isLoggedIn: false,
     user: undefined,
@@ -54,27 +52,13 @@ export const AuthProvider: React.FC = ({ children }) => {
   // -----------------------------------------------------------------
   // W o r k i n g   m e t h o d s
   // -----------------------------------------------------------------
-  const authenticateUser = async (data: FormPayload) => {
-    // With the credentials retrieve the accessToken
-    const { accessToken } = await signIn(data);
-    // With the access token retieves the AuthUser data
-    const authUserData = await getAuthUser(accessToken);
-
-    const payload = {
-      accessToken,
-      authenticateUser,
-      // New user data
-      isLoggedIn: true,
-      user: authUserData,
-      expiresIn: moment().add(7, "days").unix(),
-    };
-
-    // Updates the userData state
-    setUserData(payload);
-    // Updates the data as well for the next time ()
-    await Storage.set({ key: "user_data", value: JSON.stringify(payload) });
-  };
-
+  /**
+   * This method check for previous session of user, if the access token is
+   * still valid then restore that session, else a empty session is started
+   * and the user must login again
+   * @function
+   * @async
+   */
   const initAuthProvider = async () => {
     // Get the current timestamp
     const now = moment();
@@ -96,6 +80,36 @@ export const AuthProvider: React.FC = ({ children }) => {
     });
   };
 
+  /**
+   * This methods handles the full login flow both with the WebService at first
+   * (retrieving the access token and the info about the user) and with the 
+   * Storage to save this infos across multiple session
+   * 
+   * @param {FormPayload} data - The data coming from the RegistrationForm component
+   */
+  const authenticateUser = async (data: FormPayload) => {
+    // With the credentials retrieve the accessToken
+    const { accessToken } = await signIn(data);
+    // With the access token retieves the AuthUser data
+    const authUserData = await getAuthUser(accessToken);
+
+    const payload = {
+      accessToken,
+      authenticateUser,
+      // New user data
+      isLoggedIn: true,
+      user: authUserData,
+      // Since the access token expires after 7 days saves the expiration date
+      // in order to know when the token is still usable and when not
+      expiresIn: moment().add(7, "days").unix(),
+    };
+
+    // Updates the userData state
+    setUserData(payload);
+    // Updates the data as well for the next time ()
+    await Storage.set({ key: "user_data", value: JSON.stringify(payload) });
+  };
+
   // -----------------------------------------------------------------
   // R e n d e r   m e t h o d s
   // -----------------------------------------------------------------
@@ -108,15 +122,12 @@ export const AuthProvider: React.FC = ({ children }) => {
     initAuthProvider();
   }, []);
 
-  // on userData changed, write the changes to SharedPreference
-  useEffect(() => console.log("BP__", userData), [userData]);
-
   // -----------------------------------------------------------------
   // T e m p l a t e
   // -----------------------------------------------------------------
   return userData !== null ? (
     <AuthContext.Provider value={userData}>{children}</AuthContext.Provider>
-  ) : null;
+  ) : null; // TODO ADD SPLASHSCREEN (?)
 };
 
 // Custom hook to retrieve the authentcated user data

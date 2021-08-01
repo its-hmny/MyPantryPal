@@ -1,3 +1,6 @@
+// ------------------------------------------------------------------
+// I m p o r t s
+// ------------------------------------------------------------------
 import { FormPayload } from "../components/RegistrerForm";
 import { ERRORS } from "../data/enum";
 
@@ -13,7 +16,7 @@ const defaultHeaders = { "Content-Type": "application/json" };
  * @async
  *
  * @param {FormPayload} data - The data coming directly from the form
- * @return {Object} - The newly registred user
+ * @return {Object} - The newly registred user, as seen by the WebService
  */
 export const signUp = async (data: FormPayload) => {
   // Send the credentials to the WebService
@@ -35,9 +38,8 @@ export const signUp = async (data: FormPayload) => {
  * @async
  *
  * @param {FormPayload} data - The data coming directly from the form
- * @returns {Object} One_Time_Object
- * @return {string} One_Time_Object.accessToken -
- *          The AT with which access the private endpoints
+ * @returns {Object} OneTimeObject
+ * @return {string} OneTimeObject.accessToken - The AT with which access the private endpoints
  */
 export const signIn = async (data: FormPayload) => {
   // Send the credentials to the WebService
@@ -58,12 +60,14 @@ export const signIn = async (data: FormPayload) => {
  * @function
  * @async
  *
- * TODO
+ * @param {string} accessToken - The acess token identifying the user
+ * @return {Object} - The newly registred user, as seen by the WebService
  */
 export const getAuthUser = async (accessToken: string) => {
   // Send the credentials to the WebService
   const response = await fetch(`${baseUrl}/users/me`, {
     method: "GET",
+    // Adds the access token to the headers
     headers: { ...defaultHeaders, Authorization: `Bearer ${accessToken}` },
   });
 

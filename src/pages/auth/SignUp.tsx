@@ -19,7 +19,9 @@ import { useAuth } from "../../providers/AuthProvider";
 import { signUp } from "../../utils/WebService";
 
 /**
- * TODO COMMENT ME
+ * This components renders the Sign Up page and allows the user to register and
+ * authenticate to the WebService retrieving the JWT and redirecting him to 
+ * the Dashboard view
  *
  * @component
  * @category Components
@@ -41,10 +43,21 @@ const SignUpView: React.FC = () => {
   // -----------------------------------------------------------------
   // W o r k i n g   m e t h o d s
   // -----------------------------------------------------------------
+  /**
+   * This method handles the registration of the new user to the Webservice
+   * Since there arean't anyt form of email verification between the SignUp 
+   * and the first SignIn the same data are eventually used to authenticate 
+   * the User for the first time, redirecting him to the Dashboard upon 
+   * full flow completiom
+   * @function
+   * @async 
+   * 
+   * @param {FormPayload} data - Tha data coming from the form 
+   */
   const handleSubmit = async (data: FormPayload) => {
     // Register the user to the WebService
     await signUp(data);
-    // The uses the data to authenticate the user as well
+    // Then uses the data to authenticate the user as well
     await authenticateUser(data);
     // At last redirects the authenticated user to the Dashboard
     history.push(ROUTES.DASHBOARD);
