@@ -41,3 +41,9 @@ export enum ROUTE_KEYS {
   PROFILE = "Profile",
   SETTINGS = "Settings",
 }
+
+export enum ERRORS {
+  REQURED_DATA = "Some required fields are empty, plase fill them up",
+  LOGIN_ERROR = "There was an error and we couldn't complete the login.\nPlease check your credentials",
+  SIGNUP_ERROR =  "There was an error and we couldn't complete registration process.\nPlease try again later"
+} 
