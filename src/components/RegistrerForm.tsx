@@ -1,9 +1,17 @@
 // ------------------------------------------------------------------
 // I m p o r t s
 // ------------------------------------------------------------------
-import { IonButton, IonInput, IonItem, IonLabel, IonList } from "@ionic/react";
+import {
+  IonButton,
+  IonInput,
+  IonItem,
+  IonLabel,
+  IonList,
+  useIonAlert,
+} from "@ionic/react";
 import { loadingController } from "@ionic/core";
 import { useState } from "react";
+import { ERRORS } from "../data/enum";
 
 // ------------------------------------------------------------------
 // I n t e r f a c e s
@@ -36,6 +44,10 @@ const RegistrerForm: React.FC<Props> = (props) => {
   // -----------------------------------------------------------------
   // Properties and configurations coming from the parent component
   const { signUp = false, onSubmit, submitText } = props;
+
+  // Helper function to present lert dialog to the user
+  const [showAlert] = useIonAlert();
+
   // Default values for the form
   const defaultFormValues = {
     username: undefined,
@@ -46,28 +58,51 @@ const RegistrerForm: React.FC<Props> = (props) => {
   // -----------------------------------------------------------------
   // S t a t e
   // -----------------------------------------------------------------
+  // Internal state where all the data written in the form are saved
   const [formData, setFormData] = useState<FormPayload>(defaultFormValues);
 
   // -----------------------------------------------------------------
   // W o r k i n g   m e t h o d s
   // -----------------------------------------------------------------
+  /**
+   * A function that handles the change event trigger by a form item
+   * it expects that any form item has its own name attribute and 
+   * that the same name is used to update the value
+   * @function
+   */
   const handleChange = (e: any) => {
     if (!!e.target)
       setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  /**
+   * This methods handles wraps the onSubmit method passed by the parant 
+   * component, it handles the render of a loading alert to the user and
+   * eventually an error alert if something has gone wrong during the onSubmit()
+   * @function
+   * @async
+   */
   const submitWrapper = async () => {
     // Creates and renders the loading dialog/modal
     const loading = await loadingController.create({ message: "Loading..." });
     await loading.present();
-
-    const { username, email, password } = formData;
-    // Data validation, checks that all the field are defined
-    if (!!email && !!password && (!signUp || !!username)) {
-      await onSubmit(formData);
+    try {
+      const { username, email, password } = formData;
+      // Data validation, checks that all the field are defined
+      if (!!email && !!password && (!signUp || !!username))
+        await onSubmit(formData);
+      else throw Error(ERRORS.REQURED_DATA);
+    } catch (err) {
+      // Presents an error message to the user
+      showAlert({
+        header: "Error",
+        message: err.message,
+        buttons: ["Ok"],
+      });
+    } finally {
+      // Removes the loading spinner
+      await loading.dismiss();
     }
-
-    await loading.dismiss();
   };
 
   // -----------------------------------------------------------------
