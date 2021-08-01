@@ -12,8 +12,10 @@ import {
   IonRouterLink,
   IonText,
 } from "@ionic/react";
+import { useHistory } from "react-router";
 import RegistrerForm, { FormPayload } from "../../components/RegistrerForm";
 import { ROUTES } from "../../data/enum";
+import { useAuth } from "../../providers/AuthProvider";
 
 /**
  * This components renders the Sign In page an allows the user to authenticate
@@ -27,6 +29,10 @@ const SignInView: React.FC = () => {
   // -----------------------------------------------------------------
   // L o c a l   v a r s
   // -----------------------------------------------------------------
+  // Access the history stack of the browser/phone
+  const history = useHistory();
+  // Access the authProvider to authenticate the user
+  const { authenticateUser } = useAuth();
 
   // -----------------------------------------------------------------
   // S t a t e
@@ -36,7 +42,8 @@ const SignInView: React.FC = () => {
   // W o r k i n g   m e t h o d s
   // -----------------------------------------------------------------
   const handleSubmit = async (data: FormPayload) => {
-    console.log("BP__", "SignIn callback", data);
+    await authenticateUser(data);
+    history.push(ROUTES.DASHBOARD);
   };
 
   // -----------------------------------------------------------------

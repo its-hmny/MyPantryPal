@@ -12,8 +12,11 @@ import {
   IonRouterLink,
   IonText,
 } from "@ionic/react";
+import { useHistory } from "react-router";
 import RegistrerForm, { FormPayload } from "../../components/RegistrerForm";
 import { ROUTES } from "../../data/enum";
+import { useAuth } from "../../providers/AuthProvider";
+import { signUp } from "../../utils/WebService";
 
 /**
  * TODO COMMENT ME
@@ -26,6 +29,10 @@ const SignUpView: React.FC = () => {
   // -----------------------------------------------------------------
   // L o c a l   v a r s
   // -----------------------------------------------------------------
+  // Access the history stack of the browser/phone
+  const history = useHistory();
+  // Access the authProvider to authenticate the user
+  const { authenticateUser } = useAuth();
 
   // -----------------------------------------------------------------
   // S t a t e
@@ -35,7 +42,12 @@ const SignUpView: React.FC = () => {
   // W o r k i n g   m e t h o d s
   // -----------------------------------------------------------------
   const handleSubmit = async (data: FormPayload) => {
-    console.log("BP__", "SignUp callback", data);
+    // Register the user to the WebService
+    await signUp(data);
+    // The uses the data to authenticate the user as well
+    await authenticateUser(data);
+    // At last redirects the authenticated user to the Dashboard
+    history.push(ROUTES.DASHBOARD);
   };
 
   // -----------------------------------------------------------------

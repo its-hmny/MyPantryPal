@@ -2,7 +2,9 @@
 // I m p o r t s
 // ------------------------------------------------------------------
 import { IonReactRouter } from "@ionic/react-router";
+import { useEffect } from "react";
 import { Route } from "react-router";
+import { useAuth } from "../providers/AuthProvider";
 
 import PrivateRouter from "./PrivateRouter";
 import PublicRouter from "./PublicRouter";
@@ -19,8 +21,7 @@ const RouteInitializer: React.FC = () => {
   // -----------------------------------------------------------------
   // L o c a l   v a r s
   // -----------------------------------------------------------------
-  // TODO ADD Authenticated user logic
-  const isLoggedIn = true;
+  const { isLoggedIn } = useAuth();
 
   // -----------------------------------------------------------------
   // S t a t e
@@ -37,7 +38,7 @@ const RouteInitializer: React.FC = () => {
   // -----------------------------------------------------------------
   // u s e E f f e c t
   // -----------------------------------------------------------------
-
+  
   // -----------------------------------------------------------------
   // T e m p l a t e
   // -----------------------------------------------------------------
