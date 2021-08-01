@@ -3,6 +3,7 @@
 // ------------------------------------------------------------------
 import { IonApp } from "@ionic/react";
 
+import { AuthProvider } from "./providers/AuthProvider";
 import RouteInitializer from "./routes/RouteInitializer";
 
 // ------------------------------------------------------------------
@@ -29,7 +30,9 @@ import "./theme/variables.css";
 
 const App: React.FC = () => (
   <IonApp>
-    <RouteInitializer />
+    <AuthProvider>
+      <RouteInitializer />
+    </AuthProvider>
   </IonApp>
 );
 
