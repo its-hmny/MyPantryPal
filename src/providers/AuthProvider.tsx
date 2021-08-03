@@ -8,6 +8,7 @@ import { FormPayload } from "../components/RegistrerForm";
 import { AuthUser } from "../data/interfaces";
 import { getAuthUser, signIn } from "../utils/WebService";
 import { readFromStorage } from "../utils/Storage";
+import { IonLoading } from "@ionic/react";
 
 // ------------------------------------------------------------------
 // I n t e r f a c e s
@@ -82,9 +83,9 @@ export const AuthProvider: React.FC = ({ children }) => {
 
   /**
    * This methods handles the full login flow both with the WebService at first
-   * (retrieving the access token and the info about the user) and with the 
+   * (retrieving the access token and the info about the user) and with the
    * Storage to save this infos across multiple session
-   * 
+   *
    * @param {FormPayload} data - The data coming from the RegistrationForm component
    */
   const authenticateUser = async (data: FormPayload) => {
@@ -127,7 +128,9 @@ export const AuthProvider: React.FC = ({ children }) => {
   // -----------------------------------------------------------------
   return userData !== null ? (
     <AuthContext.Provider value={userData}>{children}</AuthContext.Provider>
-  ) : null; // TODO ADD SPLASHSCREEN (?)
+  ) : (
+    <IonLoading isOpen message={"Loading previous data"} />
+  );
 };
 
 // Custom hook to retrieve the authentcated user data

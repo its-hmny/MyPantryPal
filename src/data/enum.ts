@@ -50,7 +50,8 @@ export enum ROUTE_KEYS {
  * @category Enum
  */
 export enum ERRORS {
+  GENERAL_ERROR = "We're sorry, something went wrong. Please try again later",
   REQURED_DATA = "Some required fields are empty, plase fill them up",
-  LOGIN_ERROR = "There was an error and we couldn't complete the login.\nPlease check your credentials",
-  SIGNUP_ERROR =  "There was an error and we couldn't complete registration process.\nPlease try again later"
-} 
+  LOGIN_ERROR = "There was an error and we couldn't complete the login. Please check your credentials",
+  SIGNUP_ERROR = "There was an error and we couldn't complete registration process. Please try again later",
+}

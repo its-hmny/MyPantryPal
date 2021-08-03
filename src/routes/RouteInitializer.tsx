@@ -2,7 +2,6 @@
 // I m p o r t s
 // ------------------------------------------------------------------
 import { IonReactRouter } from "@ionic/react-router";
-import { useEffect } from "react";
 import { Route } from "react-router";
 import { useAuth } from "../providers/AuthProvider";
 
