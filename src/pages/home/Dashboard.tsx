@@ -5,22 +5,18 @@ import {
   IonAvatar,
   IonCard,
   IonCardContent,
-  IonCol,
   IonContent,
-  IonFab,
-  IonFabButton,
-  IonGrid,
-  IonIcon,
   IonItem,
   IonLabel,
   IonList,
   IonListHeader,
   IonPage,
-  IonRow,
-  IonTitle,
 } from "@ionic/react";
-import { camera } from "ionicons/icons";
+
 import { useHistory } from "react-router";
+import CameraFab from "../../components/CameraFab";
+import ProductCards from "../../components/ProductCards";
+import { useAuth } from "../../providers/AuthProvider";
 
 /**
  * Component that shows to the user a Dashboard with some recap info
@@ -37,6 +33,8 @@ const DashboardView: React.FC = () => {
   // -----------------------------------------------------------------
   // Access the history stack of the browser/phone
   const history = useHistory();
+  // Get some basic info about the user
+  const { user } = useAuth();
 
   // -----------------------------------------------------------------
   // S t a t e
@@ -62,23 +60,14 @@ const DashboardView: React.FC = () => {
       <IonContent>
         {/* On Android this sucks */}
         <IonCard>
-          <IonCardContent>Good Evening, Enea</IonCardContent>
+          <IonCardContent>
+            {`Good Evening, ${user?.firstname ?? user?.username}`}
+          </IonCardContent>
         </IonCard>
 
         {/* Products that are running out list */}
-        <IonGrid>
-          <IonRow>
-            <IonTitle>You're running out of:</IonTitle>
-          </IonRow>
-          <IonRow>
-            <IonCol>
-              <IonCard>Test</IonCard>
-            </IonCol>
-            <IonCol>
-              <IonCard>Test</IonCard>
-            </IonCol>
-          </IonRow>
-        </IonGrid>
+        <IonListHeader>You're running out of:</IonListHeader>
+        <ProductCards />
 
         {/* My groceries list */}
         <IonList>
@@ -102,13 +91,7 @@ const DashboardView: React.FC = () => {
             </IonLabel>
           </IonItem>
         </IonList>
-
-        {/* FabButton to access the Camera */}
-        <IonFab vertical="bottom" horizontal="end" slot="fixed">
-          <IonFabButton color="primary">
-            <IonIcon icon={camera} />
-          </IonFabButton>
-        </IonFab>
+        <CameraFab onPhotoTaken={async () => {}}/>
       </IonContent>
     </IonPage>
   );
