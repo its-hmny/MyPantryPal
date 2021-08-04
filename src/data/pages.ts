@@ -10,6 +10,7 @@ import { Page } from "./interfaces";
 
 import { home, fastFood, cart, person, cog } from "ionicons/icons";
 import DashboardView from "../pages/home/Dashboard";
+import UserProfileView from "../pages/UserProfile";
 
 /**
  * An array with all the pages accessible from within the App
@@ -63,7 +64,7 @@ const PAGES: { publicPages: Page[]; privatePages: Page[] } = {
       //exact: true,
       path: ROUTES.PROFILE,
       key: ROUTE_KEYS.PROFILE,
-      component: WelcomeView,
+      component: UserProfileView,
       //layout: IonPage,
       icon: person,
     },

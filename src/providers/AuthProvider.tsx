@@ -2,13 +2,19 @@
 // I m p o r t s
 // ------------------------------------------------------------------
 import { useContext, createContext, useState, useEffect } from "react";
-import { Storage } from "@capacitor/storage";
 import moment from "moment";
 import { FormPayload } from "../components/RegistrerForm";
 import { AuthUser } from "../data/interfaces";
 import { getAuthUser, signIn } from "../utils/WebService";
-import { readFromStorage } from "../utils/Storage";
-import { IonLoading } from "@ionic/react";
+import {
+  purgeFromStorage,
+  readFromStorage,
+  saveToStorage,
+} from "../utils/Storage";
+import { loadingController } from "@ionic/core";
+import { IonLoading, useIonAlert } from "@ionic/react";
+import { ERRORS, ROUTES } from "../data/enum";
+import { useHistory } from "react-router";
 
 // ------------------------------------------------------------------
 // I n t e r f a c e s
@@ -18,11 +24,16 @@ interface AuthData {
   user?: AuthUser;
   accessToken: string;
   expiresIn: number;
-  authenticateUser: (data: FormPayload) => Promise<any>;
+}
+
+interface ProvidedData extends AuthData {
+  authenticateUser: (data: FormPayload) => Promise<void>;
+  updateUser: (patch: Partial<AuthUser>) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 // AuthContext initialization
-const AuthContext = createContext<AuthData | undefined>(undefined);
+const AuthContext = createContext<ProvidedData | undefined>(undefined);
 
 /**
  * This component implements an authentication provider, that handles
@@ -36,6 +47,11 @@ export const AuthProvider: React.FC = ({ children }) => {
   // -----------------------------------------------------------------
   // L o c a l   v a r s
   // -----------------------------------------------------------------
+  // Access the history stack of the browser/phone
+  const history = useHistory();
+  // Helper function to present lert dialog to the user
+  const [showAlert] = useIonAlert();
+
   // Temporary data used if no data is avaiable or the data has expired
   const defaultData = {
     isLoggedIn: false,
@@ -69,7 +85,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     // If the data doen't exist or the access token has expired, set the state
     // as if the user has not been logged, (SignIn view)
     if (!previousData || now.isAfter(moment.unix(previousData.expiresIn))) {
-      setUserData({ ...defaultData, authenticateUser });
+      setUserData(defaultData);
       return;
     }
 
@@ -77,7 +93,6 @@ export const AuthProvider: React.FC = ({ children }) => {
     setUserData({
       ...previousData,
       isLoggedIn: true,
-      authenticateUser,
     });
   };
 
@@ -96,7 +111,6 @@ export const AuthProvider: React.FC = ({ children }) => {
 
     const payload = {
       accessToken,
-      authenticateUser,
       // New user data
       isLoggedIn: true,
       user: authUserData,
@@ -107,10 +121,45 @@ export const AuthProvider: React.FC = ({ children }) => {
 
     // Updates the userData state
     setUserData(payload);
-    // Updates the data as well for the next time ()
-    await Storage.set({ key: "user_data", value: JSON.stringify(payload) });
+    // Updates the data as well for the next time
+    await saveToStorage("user_data", payload);
   };
 
+  const updateUser = async (patch: Partial<AuthUser>) => {
+    // Check that there's something to work on
+    if (userData === null || userData.user === undefined)
+      throw Error(ERRORS.GENERAL_ERROR);
+    // Creates and renders the loading dialog/modal
+    // Updates the userData state, applaying the patch to the user
+    const updatedData = { ...userData, user: { ...userData.user, ...patch } };
+    // Updates the data as well for the next time
+    await saveToStorage("user_data", updatedData);
+    setUserData(updatedData);
+  };
+
+  const logout = async () => {
+    const loading = await loadingController.create({
+      message: "Logging out...",
+    });
+    await loading.present();
+    try {
+      // Resets the data to the default value
+      setUserData(defaultData);
+      // Updates the data in local storage as well for the next time
+      await purgeFromStorage("user_data");
+      history.push(ROUTES.SIGN_IN);
+    } catch (err) {
+      // Presents an error message to the user
+      showAlert({
+        header: "Error",
+        message: ERRORS.GENERAL_ERROR,
+        buttons: ["Ok"],
+      });
+    } finally {
+      // Removes the loading spinner
+      await loading.dismiss();
+    }
+  };
   // -----------------------------------------------------------------
   // R e n d e r   m e t h o d s
   // -----------------------------------------------------------------
@@ -127,7 +176,11 @@ export const AuthProvider: React.FC = ({ children }) => {
   // T e m p l a t e
   // -----------------------------------------------------------------
   return userData !== null ? (
-    <AuthContext.Provider value={userData}>{children}</AuthContext.Provider>
+    <AuthContext.Provider
+      value={{ authenticateUser, updateUser, logout, ...userData }}
+    >
+      {children}
+    </AuthContext.Provider>
   ) : (
     <IonLoading isOpen message={"Loading previous data"} />
   );
