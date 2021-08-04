@@ -12,20 +12,26 @@ import {
 import { loadingController } from "@ionic/core";
 import { useState } from "react";
 import { ERRORS } from "../data/enum";
+import { useAuth } from "../providers/AuthProvider";
 
 // ------------------------------------------------------------------
 // I n t e r f a c e s
 // ------------------------------------------------------------------
 interface Props {
-  signUp?: boolean;
+  mode: "SignIn" | "Update" | "SignUp";
   onSubmit: (data: FormPayload) => Promise<void>;
   submitText: string;
 }
 
 // Data returned by the form, and eventually passed to the callback
 export interface FormPayload {
-  // Only defined when 'signUp' props is true
+  // Only visible when mode props is "Update"
+  firstname?: string;
+  lastname?: string;
+  // Only visible when mode props is "Update" or "SignUp"
+  // Only modifiable when mode props is "SignUp"
   username?: string;
+  // Only modifiable when mode props is "SignUp" or "SignIn"
   email: string;
   password: string;
 }
@@ -43,15 +49,19 @@ const RegistrerForm: React.FC<Props> = (props) => {
   // L o c a l   v a r s
   // -----------------------------------------------------------------
   // Properties and configurations coming from the parent component
-  const { signUp = false, onSubmit, submitText } = props;
+  const { mode = "SignIn", onSubmit, submitText } = props;
+  // Get some basic info about the user
+  const { user } = useAuth();
 
   // Helper function to present lert dialog to the user
   const [showAlert] = useIonAlert();
 
   // Default values for the form
   const defaultFormValues = {
-    username: undefined,
-    email: "",
+    firstname: user?.firstname,
+    lastname: user?.lastname,
+    username: user?.username,
+    email: user?.email ?? "",
     password: "",
   };
 
@@ -66,7 +76,7 @@ const RegistrerForm: React.FC<Props> = (props) => {
   // -----------------------------------------------------------------
   /**
    * A function that handles the change event trigger by a form item
-   * it expects that any form item has its own name attribute and 
+   * it expects that any form item has its own name attribute and
    * that the same name is used to update the value
    * @function
    */
@@ -76,7 +86,7 @@ const RegistrerForm: React.FC<Props> = (props) => {
   };
 
   /**
-   * This methods handles wraps the onSubmit method passed by the parant 
+   * This methods handles wraps the onSubmit method passed by the parant
    * component, it handles the render of a loading alert to the user and
    * eventually an error alert if something has gone wrong during the onSubmit()
    * @function
@@ -89,8 +99,9 @@ const RegistrerForm: React.FC<Props> = (props) => {
     try {
       const { username, email, password } = formData;
       // Data validation, checks that all the field are defined
-      if (!!email && !!password && (!signUp || !!username))
-        await onSubmit(formData);
+      const isPswdValid = mode === "Update" || !!password;
+      const isUsrnmValid = mode !== "SignUp" || !!username;
+      if (!!email && isPswdValid && isUsrnmValid) await onSubmit(formData);
       else throw Error(ERRORS.REQURED_DATA);
     } catch (err) {
       // Presents an error message to the user
@@ -119,41 +130,72 @@ const RegistrerForm: React.FC<Props> = (props) => {
   return (
     <>
       <IonList inset>
-        {signUp && (
+        {mode === "Update" && (
+          <IonItem>
+            <IonLabel>Name:</IonLabel>
+            <IonInput
+              color="primary"
+              name="firstname"
+              inputMode="text"
+              autocapitalize="words"
+              value={formData.firstname}
+              onIonChange={handleChange}
+            />
+          </IonItem>
+        )}
+        {mode === "Update" && (
+          <IonItem>
+            <IonLabel>Surname:</IonLabel>
+            <IonInput
+              color="primary"
+              name="lastname"
+              inputMode="text"
+              autocapitalize="words"
+              value={formData.lastname}
+              onIonChange={handleChange}
+            />
+          </IonItem>
+        )}
+        {mode !== "SignIn" && (
           <IonItem>
             <IonLabel>Username:</IonLabel>
             <IonInput
-              autofocus
               required
               color="primary"
               name="username"
               inputMode="text"
+              value={formData.username}
               onIonChange={handleChange}
+              disabled={mode === "Update"}
             />
           </IonItem>
         )}
         <IonItem>
           <IonLabel>Email:</IonLabel>
           <IonInput
-            autofocus
             required
             color="primary"
             name="email"
             inputMode="email"
+            value={formData.email}
             onIonChange={handleChange}
+            disabled={mode === "Update"}
           />
         </IonItem>
-        <IonItem>
-          <IonLabel>Password:</IonLabel>
-          <IonInput
-            required
-            color="primary"
-            inputMode="text"
-            type="password"
-            name="password"
-            onIonChange={handleChange}
-          />
-        </IonItem>
+        {mode !== "Update" && (
+          <IonItem>
+            <IonLabel>Password:</IonLabel>
+            <IonInput
+              required
+              color="primary"
+              inputMode="text"
+              type="password"
+              name="password"
+              value={formData.password}
+              onIonChange={handleChange}
+            />
+          </IonItem>
+        )}
       </IonList>
       <IonButton expand="block" onClick={submitWrapper}>
         {submitText}

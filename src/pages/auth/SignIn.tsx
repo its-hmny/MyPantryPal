@@ -44,10 +44,10 @@ const SignInView: React.FC = () => {
   /**
    * This method handles the authentication of an already registred user
    * The main part of the is offloaded to the AuthProvider and upon successfull
-   * completion the method handles the redirect to the Dashboard view 
+   * completion the method handles the redirect to the Dashboard view
    * @function
    * @async
-   * 
+   *
    * @param {FormPayload} data - The data coming straight from the form
    */
   const handleSubmit = async (data: FormPayload) => {
@@ -79,7 +79,11 @@ const SignInView: React.FC = () => {
               Insert here your credentials in order to access and manage your
               account
             </IonText>
-            <RegistrerForm onSubmit={handleSubmit} submitText="Login" />
+            <RegistrerForm
+              mode="SignIn"
+              submitText="Login"
+              onSubmit={handleSubmit}
+            />
             <IonText>
               Not a member?{" "}
               <IonRouterLink href={ROUTES.SIGN_UP} routerDirection="forward">

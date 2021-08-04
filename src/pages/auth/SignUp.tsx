@@ -88,9 +88,9 @@ const SignUpView: React.FC = () => {
               account
             </IonText>
             <RegistrerForm
-              signUp
-              onSubmit={handleSubmit}
+              mode="SignUp"
               submitText="Sign Up"
+              onSubmit={handleSubmit}
             />
             <IonText>
               Alread have an account?{" "}
