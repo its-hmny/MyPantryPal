@@ -35,3 +35,7 @@ export const readFromStorage = async <T>(key: string) => {
   if (!!value) return JSON.parse(value) as T;
   else return null;
 };
+
+export const purgeFromStorage = async (key: string) => {
+  await Storage.remove({ key });
+};

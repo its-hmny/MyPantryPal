@@ -2,6 +2,7 @@
  * I N T E R F A C E S
  */
 
+import { Photo } from "@capacitor/camera";
 import React from "react";
 import { ROUTES, ROUTE_KEYS } from "./enum";
 
@@ -50,6 +51,8 @@ export interface AuthUser {
   username: string;
   /** The email used for the Sign Up/In flow */
   email: string;
+  /** base64 encoding of the AuthUser profile image */
+  profile_image?: Photo;
   /** The uuid of the current AuthUser */
   id: string;
 }

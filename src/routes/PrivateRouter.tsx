@@ -54,7 +54,7 @@ const PrivateRouter: React.FC = () => {
       privatePages
         .filter((page) => !!page.icon)
         .map((page) => (
-          <IonTabButton tab={page.key} href={page.path}>
+          <IonTabButton key={page.key} tab={page.key} href={page.path}>
             <IonIcon icon={page.icon} />
             <IonLabel>{page.key}</IonLabel>
           </IonTabButton>

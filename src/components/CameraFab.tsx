@@ -68,7 +68,6 @@ const CameraFab: React.FC<Props> = ({ onPhotoTaken }) => {
       });
 
       // Calls the callback provided by the parent component
-      console.log("BP__", photo);
       await onPhotoTaken(photo);
     } catch (err) {
       // Presents an error message to the user
