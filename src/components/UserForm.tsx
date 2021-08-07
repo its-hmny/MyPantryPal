@@ -38,13 +38,14 @@ export interface FormPayload {
 
 /**
  * This fragment handles the form rendering for the Sign Up and Sign In
- * pages, it isolates and abtracts the shared logic for the two pages
+ * pages, it isolates and abtracts the shared logic for the two pages.
+ * It also work as a Form to update other info about the user in "Update" mode
  *
  * @component
  * @category Components
  * @subcategory Fragment
  */
-const RegistrerForm: React.FC<Props> = (props) => {
+const UserForm: React.FC<Props> = (props) => {
   // -----------------------------------------------------------------
   // L o c a l   v a r s
   // -----------------------------------------------------------------
@@ -204,4 +205,4 @@ const RegistrerForm: React.FC<Props> = (props) => {
   );
 };
 
-export default RegistrerForm;
+export default UserForm;

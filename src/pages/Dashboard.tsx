@@ -14,9 +14,9 @@ import {
 } from "@ionic/react";
 
 import { useHistory } from "react-router";
-import CameraFab from "../../components/CameraFab";
-import ProductCards from "../../components/ProductCards";
-import { useAuth } from "../../providers/AuthProvider";
+import CameraFab from "../components/CameraFab";
+import ProductCards from "../components/ProductCards";
+import { useAuth } from "../providers/AuthProvider";
 
 /**
  * Component that shows to the user a Dashboard with some recap info

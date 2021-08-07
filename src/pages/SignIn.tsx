@@ -13,9 +13,9 @@ import {
   IonText,
 } from "@ionic/react";
 import { useHistory } from "react-router";
-import RegistrerForm, { FormPayload } from "../../components/RegistrerForm";
-import { ROUTES } from "../../data/enum";
-import { useAuth } from "../../providers/AuthProvider";
+import UserForm, { FormPayload } from "../components/UserForm";
+import { ROUTES } from "../data/enum";
+import { useAuth } from "../providers/AuthProvider";
 
 /**
  * This components renders the Sign In page an allows the user to authenticate
@@ -79,7 +79,7 @@ const SignInView: React.FC = () => {
               Insert here your credentials in order to access and manage your
               account
             </IonText>
-            <RegistrerForm
+            <UserForm
               mode="SignIn"
               submitText="Login"
               onSubmit={handleSubmit}

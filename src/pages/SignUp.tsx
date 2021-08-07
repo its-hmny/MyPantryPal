@@ -13,10 +13,10 @@ import {
   IonText,
 } from "@ionic/react";
 import { useHistory } from "react-router";
-import RegistrerForm, { FormPayload } from "../../components/RegistrerForm";
-import { ROUTES } from "../../data/enum";
-import { useAuth } from "../../providers/AuthProvider";
-import { signUp } from "../../utils/WebService";
+import UserForm, { FormPayload } from "../components/UserForm";
+import { ROUTES } from "../data/enum";
+import { useAuth } from "../providers/AuthProvider";
+import { signUp } from "../utils/WebService";
 
 /**
  * This components renders the Sign Up page and allows the user to register and
@@ -87,7 +87,7 @@ const SignUpView: React.FC = () => {
               Insert here some basic info about you in order to set up your
               account
             </IonText>
-            <RegistrerForm
+            <UserForm
               mode="SignUp"
               submitText="Sign Up"
               onSubmit={handleSubmit}
