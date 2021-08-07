@@ -1,7 +1,7 @@
 // ------------------------------------------------------------------
 // I m p o r t s
 // ------------------------------------------------------------------
-import { FormPayload } from "../components/RegistrerForm";
+import { FormPayload } from "../components/UserForm";
 import { ERRORS } from "../data/enum";
 
 // Since the WebService doesn't have CORS enabled this proxy setup whats needed
@@ -11,7 +11,9 @@ const baseUrl = `${proxyServerUrl}https://lam21.modron.network`;
 const defaultHeaders = { "Content-Type": "application/json" };
 
 /**
- * TODO COMMENT
+ * This function handles the WebService call to register a new User
+ * to the platform, if the WeService returns an error then a translated
+ * error is throwed
  * @function
  * @async
  *
@@ -33,7 +35,9 @@ export const signUp = async (data: FormPayload) => {
 };
 
 /**
- * TODO COMMENT
+ * This function handles the WebService call to authenticate a User retrieving
+ * his access token, if the WeService returns an error then a translated
+ * error is throwed
  * @function
  * @async
  *
@@ -56,12 +60,14 @@ export const signIn = async (data: FormPayload) => {
 };
 
 /**
- * TODO COMMENT
+ * This function handles the WebService call to get all the information
+ * avaiable about a given user, if the WeService returns an error then a
+ *  translated error is throwed
  * @function
  * @async
  *
  * @param {string} accessToken - The acess token identifying the user
- * @return {Object} - The newly registred user, as seen by the WebService
+ * @return {Object} - The corresponding user, as seen by the WebService
  */
 export const getAuthUser = async (accessToken: string) => {
   // Send the credentials to the WebService

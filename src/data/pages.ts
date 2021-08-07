@@ -1,15 +1,15 @@
 // -----------------------------------------------------------------
 // I m p o r t s
 // -----------------------------------------------------------------
-import SignInView from "../pages/auth/SignIn";
-import SignUpView from "../pages/auth/SignUp";
+import SignInView from "../pages/SignIn";
+import SignUpView from "../pages/SignUp";
 import WelcomeView from "../pages/Welcome";
 
 import { ROUTES, ROUTE_KEYS } from "./enum";
 import { Page } from "./interfaces";
 
 import { home, fastFood, cart, person, cog } from "ionicons/icons";
-import DashboardView from "../pages/home/Dashboard";
+import DashboardView from "../pages/Dashboard";
 import UserProfileView from "../pages/UserProfile";
 
 /**

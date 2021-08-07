@@ -3,7 +3,7 @@
 // ------------------------------------------------------------------
 import { useContext, createContext, useState, useEffect } from "react";
 import moment from "moment";
-import { FormPayload } from "../components/RegistrerForm";
+import { FormPayload } from "../components/UserForm";
 import { AuthUser } from "../data/interfaces";
 import { getAuthUser, signIn } from "../utils/WebService";
 import {
@@ -100,6 +100,8 @@ export const AuthProvider: React.FC = ({ children }) => {
    * This methods handles the full login flow both with the WebService at first
    * (retrieving the access token and the info about the user) and with the
    * Storage to save this infos across multiple session
+   * @function
+   * @async
    *
    * @param {FormPayload} data - The data coming from the RegistrationForm component
    */
@@ -125,6 +127,15 @@ export const AuthProvider: React.FC = ({ children }) => {
     await saveToStorage("user_data", payload);
   };
 
+  /**
+   * This function updates the auth user data persistently, it receives a
+   * patch object with the fields to be changed, apples the patch and saves
+   * the new result both on Local Storage and inside the state
+   * @function
+   * @async
+   *
+   * @param {Partial<AuthUser>} patch - The data to be changed
+   */
   const updateUser = async (patch: Partial<AuthUser>) => {
     // Check that there's something to work on
     if (userData === null || userData.user === undefined)
@@ -137,6 +148,13 @@ export const AuthProvider: React.FC = ({ children }) => {
     setUserData(updatedData);
   };
 
+  /**
+   * This function handles the logut from the current auth user session
+   * it removes all the data saved about the user and evntually show an
+   * error notification if error are encountered during the process
+   * @function
+   * @async
+   */
   const logout = async () => {
     const loading = await loadingController.create({
       message: "Logging out...",
@@ -160,6 +178,7 @@ export const AuthProvider: React.FC = ({ children }) => {
       await loading.dismiss();
     }
   };
+
   // -----------------------------------------------------------------
   // R e n d e r   m e t h o d s
   // -----------------------------------------------------------------
@@ -189,7 +208,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 // Custom hook to retrieve the authentcated user data
 export const useAuth = () => {
   const value = useContext(AuthContext);
-  if (value == undefined) {
+  if (value === undefined) {
     throw new Error("useAuth must be used inside an AuthProvider");
   }
   return value;
