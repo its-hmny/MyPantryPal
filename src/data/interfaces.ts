@@ -76,3 +76,21 @@ export interface Product {
   /** The barcode/id f the product */
   barcode: number;
 }
+
+/**
+ * Interface that representa the data avaiable for groceries list made by the user
+ *
+ * @interface
+ * @alias GroceryList
+ *
+ * @category Interface
+ * @subcategory General
+ */
+export interface GroceryList {
+  /** The name of the groceries list */
+  name: string;
+  /** The date in which the user would like to shop the given list */
+  date?: number;
+  /** The list of product to buy */
+  products: Product[];
+}

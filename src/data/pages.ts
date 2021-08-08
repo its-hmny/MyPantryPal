@@ -11,6 +11,7 @@ import { Page } from "./interfaces";
 import { home, fastFood, cart, person, cog } from "ionicons/icons";
 import DashboardView from "../pages/Dashboard";
 import UserProfileView from "../pages/UserProfile";
+import MyGroceryListsView from "../pages/MyGroceryLists";
 
 /**
  * An array with all the pages accessible from within the App
@@ -56,9 +57,16 @@ const PAGES: { publicPages: Page[]; privatePages: Page[] } = {
       //exact: true,
       path: ROUTES.GROCERIES_LIST,
       key: ROUTE_KEYS.GROCERIES_LIST,
-      component: WelcomeView,
+      component: MyGroceryListsView,
       //layout: IonPage,
       icon: cart,
+    },
+    {
+      //exact: true,
+      path: ROUTES.GROCERY_LIST_DETAILS,
+      key: ROUTE_KEYS.GROCERY_LIST_DETAILS,
+      component: WelcomeView,
+      //layout: IonPage,
     },
     {
       //exact: true,
@@ -67,14 +75,6 @@ const PAGES: { publicPages: Page[]; privatePages: Page[] } = {
       component: UserProfileView,
       //layout: IonPage,
       icon: person,
-    },
-    {
-      //exact: true,
-      path: ROUTES.SETTINGS,
-      key: ROUTE_KEYS.SETTINGS,
-      component: WelcomeView,
-      //layout: IonPage,
-      icon: cog,
     },
   ],
 };
