@@ -2,20 +2,23 @@
 // I m p o r t s
 // -----------------------------------------------------------------
 import {
-  IonAvatar,
   IonCard,
   IonCardContent,
+  IonChip,
   IonContent,
-  IonItem,
+  IonIcon,
   IonLabel,
-  IonList,
   IonListHeader,
   IonPage,
+  useIonActionSheet,
 } from "@ionic/react";
+import { alertCircleOutline } from "ionicons/icons";
 
-import { useHistory } from "react-router";
 import CameraFab from "../components/CameraFab";
 import ProductCards from "../components/ProductCards";
+import UserGroceryList from "../components/UserGroceryList";
+import { GroceryList, Product } from "../data/interfaces";
+import { TestGroceriesList, TestProds } from "../data/tmp";
 import { useAuth } from "../providers/AuthProvider";
 
 /**
@@ -31,10 +34,10 @@ const DashboardView: React.FC = () => {
   // -----------------------------------------------------------------
   // L o c a l   v a r s
   // -----------------------------------------------------------------
-  // Access the history stack of the browser/phone
-  const history = useHistory();
   // Get some basic info about the user
   const { user } = useAuth();
+  // Helper function to present an Action Sheet to the user
+  const [presentAction] = useIonActionSheet();
 
   // -----------------------------------------------------------------
   // S t a t e
@@ -43,6 +46,41 @@ const DashboardView: React.FC = () => {
   // -----------------------------------------------------------------
   // W o r k i n g   m e t h o d s
   // -----------------------------------------------------------------
+  /**
+   * This function handles the selecton by the user of a product from
+   * the "Running low" suggestion list, it presents an ActionSheet where
+   * the destintion Grocery List can be selected in order to add the product
+   * @function
+   * @async
+   *
+   * @param {Product} prod - The product selected
+   */
+  const addToGroceryLists = async (prod: Product) => {
+    // Generate all the possible action/button based on the avaiable lists
+    const actions = TestGroceriesList.map((gl) => ({
+      text: gl.name,
+      //role: "",
+      handler: async () => await addProduct2GroceryList(gl, prod),
+    }));
+    // Present the action sheet with all the button needed
+    await presentAction({
+      header: `Add "${prod.name}" to one of your grocery lists`,
+      buttons: [...actions, { text: "Cancel", role: "destructive" }],
+    });
+  };
+
+  /**
+   * TODO COMMENT
+   * @function
+   * @async
+   *
+   * @param {GroceryList} list - The destionation list
+   * @param {Product} prod - The product to be added
+   */
+  const addProduct2GroceryList = async (list: GroceryList, prod: Product) => {
+    console.log("BP__", list, prod);
+    // TODO add query execution here
+  };
 
   // -----------------------------------------------------------------
   // R e n d e r   m e t h o d s
@@ -67,31 +105,29 @@ const DashboardView: React.FC = () => {
 
         {/* Products that are running out list */}
         <IonListHeader>You're running out of:</IonListHeader>
-        <ProductCards />
+        {!!TestProds.length ? (
+          <>
+            <ProductCards
+              canBeAdded
+              products={TestProds}
+              onAddProduct={addToGroceryLists}
+            />
+          </>
+        ) : (
+          <IonChip>
+            <IonIcon icon={alertCircleOutline} color="primary" />
+            <IonLabel>
+              No products are registered, in order to create a product scan the
+              barode and add it to your pantry
+            </IonLabel>
+          </IonChip>
+        )}
 
         {/* My groceries list */}
-        <IonList>
-          <IonListHeader>Here's your groceries list:</IonListHeader>
-          <IonItem>
-            <IonAvatar slot="start">
-              <img src={`${process.env.PUBLIC_URL}/assets/icon/icon.png`} />
-            </IonAvatar>
-            <IonLabel>
-              <h1>Butter</h1>
-              <h5>Only 5 left</h5>
-            </IonLabel>
-          </IonItem>
-          <IonItem>
-            <IonAvatar slot="start">
-              <img src={`${process.env.PUBLIC_URL}/assets/icon/icon.png`} />
-            </IonAvatar>
-            <IonLabel>
-              <h1>Pringles</h1>
-              <h5>Only 1 left</h5>
-            </IonLabel>
-          </IonItem>
-        </IonList>
-        <CameraFab onPhotoTaken={async () => {}}/>
+        <UserGroceryList />
+
+        {/* Camera fab to start scanning items */}
+        <CameraFab onPhotoTaken={async () => {}} />
       </IonContent>
     </IonPage>
   );
