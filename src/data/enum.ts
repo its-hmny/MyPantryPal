@@ -18,8 +18,8 @@ export enum ROUTES {
   DASHBOARD = "/dashboard",
   MY_PANTRY = "/my-pantry",
   GROCERIES_LIST = "/groceries-list",
+  GROCERY_LIST_DETAILS = "/groceries-list/:id",
   PROFILE = "/profile",
-  SETTINGS = "/settings",
 }
 
 /**
@@ -37,9 +37,9 @@ export enum ROUTE_KEYS {
   // PRIVATE ROUTES
   DASHBOARD = "Dashboard",
   MY_PANTRY = "My Pantry",
-  GROCERIES_LIST = "Groceries List",
+  GROCERIES_LIST = "Grocery Lists",
+  GROCERY_LIST_DETAILS = "Grocery List Details",
   PROFILE = "Profile",
-  SETTINGS = "Settings",
 }
 
 /**
@@ -54,4 +54,5 @@ export enum ERRORS {
   REQURED_DATA = "Some required fields are empty, plase fill them up",
   LOGIN_ERROR = "There was an error and we couldn't complete the login. Please check your credentials",
   SIGNUP_ERROR = "There was an error and we couldn't complete registration process. Please try again later",
+  DATABASE_ERROR = "There was an error ith the Database setup"
 }

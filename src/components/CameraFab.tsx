@@ -8,7 +8,6 @@ import {
   Photo,
 } from "@capacitor/camera";
 import { IonFab, IonFabButton, IonIcon, useIonAlert } from "@ionic/react";
-import { useHistory } from "react-router";
 import { camera } from "ionicons/icons";
 import { isPlatform } from "@ionic/core";
 import { ERRORS } from "../data/enum";
@@ -21,7 +20,9 @@ interface Props {
 }
 
 /**
- * TODO COMMENT
+ * This component handles the rendering of Fab that let the user interact
+ * with the camera of his phone, asking before for permission and then 
+ * calls the callback passed by the parent component upon completion
  *
  * @component
  * @category Components
@@ -31,9 +32,6 @@ const CameraFab: React.FC<Props> = ({ onPhotoTaken }) => {
   // -----------------------------------------------------------------
   // L o c a l   v a r s
   // -----------------------------------------------------------------
-  // Access the history stack of the browser/phone
-  const history = useHistory();
-
   // Helper function to present lert dialog to the user
   const [showAlert] = useIonAlert();
 
@@ -44,6 +42,12 @@ const CameraFab: React.FC<Props> = ({ onPhotoTaken }) => {
   // -----------------------------------------------------------------
   // W o r k i n g   m e t h o d s
   // -----------------------------------------------------------------
+  /**
+   * This function handles the permission request to access the camera
+   * and the eventual callback after the picture has been taken
+   * @function
+   * @async
+   */
   const openCamera = async () => {
     try {
       const { camera: hasAlreadyPermission } = await Camera.checkPermissions();
@@ -100,6 +104,3 @@ const CameraFab: React.FC<Props> = ({ onPhotoTaken }) => {
 };
 
 export default CameraFab;
-function showAlert(arg0: { header: string; message: any; buttons: string[] }) {
-  throw new Error("Function not implemented.");
-}
