@@ -32,7 +32,7 @@ const CameraFab: React.FC<Props> = ({ onPhotoTaken }) => {
   // -----------------------------------------------------------------
   // L o c a l   v a r s
   // -----------------------------------------------------------------
-  // Helper function to present lert dialog to the user
+  // Helper function to present alert dialog to the user
   const [showAlert] = useIonAlert();
 
   // -----------------------------------------------------------------
