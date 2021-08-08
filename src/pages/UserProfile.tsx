@@ -19,7 +19,7 @@ import UserForm from "../components/UserForm";
 import { useAuth } from "../providers/AuthProvider";
 
 /**
- * This page allows the user to update his wn profile, changing or adding 
+ * This page allows the user to update his wn profile, changing or adding
  * name and surname fields or uplaod a profile picture. It saves all changes
  * made persistenly on the Local Storage
  *
@@ -34,13 +34,12 @@ const UserProfileView: React.FC = () => {
   // Get some basic info about the user
   const { user, updateUser, logout } = useAuth();
 
-  // This memoized result is the image to be displayed in the card, it 
+  // This memoized result is the image to be displayed in the card, it
   // could either be the previous/current profile image or a placeholder
   const userProfileImage = useMemo(() => {
     if (!!user?.profile_image)
       return `data:image/${user.profile_image.format};base64,${user.profile_image.base64String}`;
-    // TODO RETURN USER PLACEHOLDER
-    else return `${process.env.PUBLIC_URL}/assets/icon/icon.png`;
+    else return `${process.env.PUBLIC_URL}/assets/icon/avatar.svg`;
   }, [user?.profile_image]);
 
   // -----------------------------------------------------------------
@@ -54,8 +53,8 @@ const UserProfileView: React.FC = () => {
    * This function saves the given photo as the new user profile image
    * @function
    * @async
-   * 
-   * @param {Photo} newAvatar -  
+   *
+   * @param {Photo} newAvatar -
    */
   const handleImageChange = async (newAvatar: Photo) => {
     await updateUser({ profile_image: newAvatar });
@@ -87,11 +86,7 @@ const UserProfileView: React.FC = () => {
               Here you can customize some of aspect if your profile, such as the
               image or the name
             </IonText>
-            <UserForm
-              mode="Update"
-              submitText="Save"
-              onSubmit={updateUser}
-            />
+            <UserForm mode="Update" submitText="Save" onSubmit={updateUser} />
             <IonText>
               Already leaving?{" "}
               <IonRouterLink color="danger" onClick={logout}>
