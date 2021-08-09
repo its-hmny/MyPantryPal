@@ -1,0 +1,9 @@
+.user_message {
+  margin: 2% 5% 2% 5%;
+  height: fit-content;
+  font-size: 17px;
+}
+
+.user_message > ion-icon {
+  width: 20%;
+}

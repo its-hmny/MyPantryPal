@@ -21,6 +21,11 @@ import { GroceryList, Product } from "../data/interfaces";
 import { TestGroceriesList, TestProds } from "../data/tmp";
 import { useAuth } from "../providers/AuthProvider";
 
+// ------------------------------------------------------------------
+// S t y l e s
+// ------------------------------------------------------------------
+import "../theme/Dashboard.css";
+
 /**
  * Component that shows to the user a Dashboard with some recap info
  * such as, the products in the pantry running low on quantity and the
@@ -114,8 +119,8 @@ const DashboardView: React.FC = () => {
             />
           </>
         ) : (
-          <IonChip>
-            <IonIcon icon={alertCircleOutline} color="primary" />
+          <IonChip className="user_message">
+            <IonIcon icon={alertCircleOutline} color="warning" />
             <IonLabel>
               No products are registered, in order to create a product scan the
               barode and add it to your pantry
@@ -126,8 +131,9 @@ const DashboardView: React.FC = () => {
         {/* My groceries list */}
         <UserGroceryList />
 
-        {/* Camera fab to start scanning items */}
+        {/* Camera fab to start scanning items 
         <CameraFab onPhotoTaken={async () => {}} />
+        */}
       </IonContent>
     </IonPage>
   );
