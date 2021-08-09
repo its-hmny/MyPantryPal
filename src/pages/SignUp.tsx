@@ -18,9 +18,14 @@ import { ROUTES } from "../data/enum";
 import { useAuth } from "../providers/AuthProvider";
 import { signUp } from "../utils/WebService";
 
+// ------------------------------------------------------------------
+// S t y l e s
+// ------------------------------------------------------------------
+import "../theme/SignIn_SignUp.css";
+
 /**
  * This components renders the Sign Up page and allows the user to register and
- * authenticate to the WebService retrieving the JWT and redirecting him to 
+ * authenticate to the WebService retrieving the JWT and redirecting him to
  * the Dashboard view
  *
  * @component
@@ -45,14 +50,14 @@ const SignUpView: React.FC = () => {
   // -----------------------------------------------------------------
   /**
    * This method handles the registration of the new user to the Webservice
-   * Since there arean't anyt form of email verification between the SignUp 
-   * and the first SignIn the same data are eventually used to authenticate 
-   * the User for the first time, redirecting him to the Dashboard upon 
+   * Since there arean't anyt form of email verification between the SignUp
+   * and the first SignIn the same data are eventually used to authenticate
+   * the User for the first time, redirecting him to the Dashboard upon
    * full flow completiom
    * @function
-   * @async 
-   * 
-   * @param {FormPayload} data - Tha data coming from the form 
+   * @async
+   *
+   * @param {FormPayload} data - Tha data coming from the form
    */
   const handleSubmit = async (data: FormPayload) => {
     // Register the user to the WebService
@@ -75,9 +80,9 @@ const SignUpView: React.FC = () => {
   // T e m p l a t e
   // -----------------------------------------------------------------
   return (
-    <IonPage id="sign-up-page">
+    <IonPage>
       <IonContent>
-        <IonCard>
+        <IonCard className="form_card">
           <IonCardHeader>
             <IonImg src={`${process.env.PUBLIC_URL}/assets/icon/icon.png`} />
             <IonCardTitle>Sign up</IonCardTitle>

@@ -16,10 +16,15 @@ import { add } from "ionicons/icons";
 import { Product } from "../data/interfaces";
 
 // ------------------------------------------------------------------
+// S t y l e s
+// ------------------------------------------------------------------
+import "../theme/ProductCards.css";
+
+// ------------------------------------------------------------------
 // I n t e r f a c e s
 // ------------------------------------------------------------------
 interface Props {
-  // The list of product to be displayed 
+  // The list of product to be displayed
   products: Product[];
   // Boolean to render Plus button inside the card
   canBeAdded?: true;
@@ -28,7 +33,7 @@ interface Props {
 }
 
 /**
- * This fragment renders a list/grid of card where each card represents 
+ * This fragment renders a list/grid of card where each card represents
  * a Product, a optional Add action can be enabled via props as well
  * but the callback must be passed by the parent component
  *
@@ -66,7 +71,7 @@ const ProductCards: React.FC<Props> = (props) => {
       <IonRow className="ion-align-items-start">
         {products.map((product) => (
           <IonCol size="6" key={product.barcode}>
-            <IonCard>
+            <IonCard className="product_card">
               <IonCardContent>
                 <IonAvatar>
                   <img

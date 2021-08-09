@@ -11,6 +11,7 @@ import {
   IonLabel,
   IonList,
   IonListHeader,
+  IonText,
 } from "@ionic/react";
 import { checkmark, trash } from "ionicons/icons";
 import { useHistory } from "react-router";
@@ -99,7 +100,9 @@ const UserGroceryLists: React.FC = () => {
             </IonAvatar>
             <IonLabel>
               <h1>{list.name}</h1>
-              <h5>{`Contains ${list.products.length} products`}</h5>
+              <IonText color="primary">
+                <h5>{`Contains ${list.products.length} products`}</h5>
+              </IonText>
             </IonLabel>
           </IonItem>
           <IonItemOptions side="end">

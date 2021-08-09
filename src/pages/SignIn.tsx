@@ -17,6 +17,11 @@ import UserForm, { FormPayload } from "../components/UserForm";
 import { ROUTES } from "../data/enum";
 import { useAuth } from "../providers/AuthProvider";
 
+// ------------------------------------------------------------------
+// S t y l e s
+// ------------------------------------------------------------------
+import "../theme/SignIn_SignUp.css";
+
 /**
  * This components renders the Sign In page an allows the user to authenticate
  * to the WebService retrieving the JWT and redirecting him to the home
@@ -67,9 +72,9 @@ const SignInView: React.FC = () => {
   // T e m p l a t e
   // -----------------------------------------------------------------
   return (
-    <IonPage id="sign-in-page">
+    <IonPage>
       <IonContent>
-        <IonCard>
+        <IonCard className="form_card">
           <IonCardHeader>
             <IonImg src={`${process.env.PUBLIC_URL}/assets/icon/icon.png`} />
             <IonCardTitle>Sign in</IonCardTitle>

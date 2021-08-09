@@ -18,6 +18,11 @@ import CameraFab from "../components/CameraFab";
 import UserForm from "../components/UserForm";
 import { useAuth } from "../providers/AuthProvider";
 
+// ------------------------------------------------------------------
+// S t y l e s
+// ------------------------------------------------------------------
+import "../theme/UserProfile.css";
+
 /**
  * This page allows the user to update his wn profile, changing or adding
  * name and surname fields or uplaod a profile picture. It saves all changes
@@ -74,7 +79,7 @@ const UserProfileView: React.FC = () => {
   return (
     <IonPage>
       <IonContent>
-        <IonCard>
+        <IonCard className="user_profile_card">
           <IonCardHeader>
             <IonAvatar>
               <img src={userProfileImage} />
