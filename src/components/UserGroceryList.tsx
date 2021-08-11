@@ -45,8 +45,7 @@ const UserGroceryLists: React.FC = () => {
    * @param {GroceryList} list - The selected list
    */
   const go2GroceryListDetail = (list: GroceryList) => {
-    // Add detail route and page and view
-    history.push(ROUTES.GROCERY_LIST_DETAILS);
+    history.push(ROUTES.GROCERY_LIST_DETAILS.replace(":id", list.id));
   };
 
   /**

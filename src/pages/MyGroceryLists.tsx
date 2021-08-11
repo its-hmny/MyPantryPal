@@ -11,9 +11,11 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  useIonModal,
 } from "@ionic/react";
 import { add } from "ionicons/icons";
 import UserGroceryLists from "../components/UserGroceryList";
+import NewGroceryListView from "./NewGroceryList";
 
 /**
  * TODO COMMENT
@@ -26,6 +28,13 @@ const MyGroceryListsView: React.FC = () => {
   // -----------------------------------------------------------------
   // L o c a l   v a r s
   // -----------------------------------------------------------------
+  const handleCancel = () => dismissModal();
+
+  // TODO COMMENT
+  const [presentModal, dismissModal] = useIonModal(NewGroceryListView, {
+    onListCreated: handleCancel,
+    onCancel: handleCancel,
+  });
 
   // -----------------------------------------------------------------
   // S t a t e
@@ -34,9 +43,6 @@ const MyGroceryListsView: React.FC = () => {
   // -----------------------------------------------------------------
   // W o r k i n g   m e t h o d s
   // -----------------------------------------------------------------
-  const createNewList = async () => {
-    console.log("BP__");
-  };
 
   // -----------------------------------------------------------------
   // R e n d e r   m e t h o d s
@@ -55,7 +61,7 @@ const MyGroceryListsView: React.FC = () => {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="end" color="primary">
-            <IonButton onClick={createNewList}>
+            <IonButton onClick={() => presentModal()}>
               <IonIcon slot="icon-only" icon={add} />
             </IonButton>
           </IonButtons>
@@ -67,7 +73,7 @@ const MyGroceryListsView: React.FC = () => {
         <UserGroceryLists />
       </IonContent>
       <IonFooter>
-        <IonButton expand="block" onClick={createNewList}>
+        <IonButton expand="block" onClick={() => presentModal()}>
           Create a new grocery list
         </IonButton>
       </IonFooter>

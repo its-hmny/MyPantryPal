@@ -1,17 +1,18 @@
 // -----------------------------------------------------------------
 // I m p o r t s
 // -----------------------------------------------------------------
-import SignInView from "../pages/SignIn";
-import SignUpView from "../pages/SignUp";
-import WelcomeView from "../pages/Welcome";
-
 import { ROUTES, ROUTE_KEYS } from "./enum";
 import { Page } from "./interfaces";
 
-import { home, fastFood, cart, person, cog } from "ionicons/icons";
+import { home, fastFood, cart, person } from "ionicons/icons";
+
 import DashboardView from "../pages/Dashboard";
-import UserProfileView from "../pages/UserProfile";
+import GroceryListDeatilsView from "../pages/GroceryListDetail";
 import MyGroceryListsView from "../pages/MyGroceryLists";
+import MyPantryView from "../pages/MyPantry";
+import SignInView from "../pages/SignIn";
+import SignUpView from "../pages/SignUp";
+import UserProfileView from "../pages/UserProfile";
 
 /**
  * An array with all the pages accessible from within the App
@@ -49,7 +50,7 @@ const PAGES: { publicPages: Page[]; privatePages: Page[] } = {
       //exact: true,
       path: ROUTES.MY_PANTRY,
       key: ROUTE_KEYS.MY_PANTRY,
-      component: WelcomeView,
+      component: MyPantryView,
       //layout: IonPage,
       icon: fastFood,
     },
@@ -65,7 +66,7 @@ const PAGES: { publicPages: Page[]; privatePages: Page[] } = {
       //exact: true,
       path: ROUTES.GROCERY_LIST_DETAILS,
       key: ROUTE_KEYS.GROCERY_LIST_DETAILS,
-      component: WelcomeView,
+      component: GroceryListDeatilsView,
       //layout: IonPage,
     },
     {

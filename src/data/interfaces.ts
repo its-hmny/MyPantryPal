@@ -87,6 +87,8 @@ export interface Product {
  * @subcategory General
  */
 export interface GroceryList {
+  /** The uuid of the Grocery List */
+  id: string;
   /** The name of the groceries list */
   name: string;
   /** The date in which the user would like to shop the given list */
