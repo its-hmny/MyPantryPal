@@ -10,11 +10,12 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
+import { add, mailUnreadSharp, remove } from "ionicons/icons";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import ProductCards from "../components/ProductCards";
 import { ROUTES } from "../data/enum";
-import { GroceryList } from "../data/interfaces";
+import { GroceryList, Product } from "../data/interfaces";
 import { TestGroceriesList } from "../data/tmp";
 
 /**
@@ -43,6 +44,10 @@ const GroceryListDeatilsView: React.FC = () => {
     setList(TestGroceriesList.find((l) => l.id === listId) ?? null);
   };
 
+  const addQuantity = async (prod: Product, diff: number) => {
+    console.log("BP__ onAddQuantity", prod, diff);
+  };
+
   // -----------------------------------------------------------------
   // R e n d e r   m e t h o d s
   // -----------------------------------------------------------------
@@ -68,7 +73,13 @@ const GroceryListDeatilsView: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <ProductCards products={list.products} />
+        <ProductCards
+          products={list.products}
+          actions={[
+            { icon: remove, callback: (prod) => addQuantity(prod, -1) },
+            { icon: add, callback: (prod) => addQuantity(prod, 1) },
+          ]}
+        />
       </IonContent>
     </IonPage>
   ) : null;

@@ -84,7 +84,7 @@ const UserGroceryLists: React.FC = () => {
     <IonList>
       <IonListHeader>Your grocery lists:</IonListHeader>
       {TestGroceriesList.map((list) => (
-        <IonItemSliding>
+        <IonItemSliding key={list.id}>
           <IonItemOptions side="start">
             <IonItemOption
               color="secondary"

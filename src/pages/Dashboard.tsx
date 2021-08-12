@@ -12,9 +12,7 @@ import {
   IonPage,
   useIonActionSheet,
 } from "@ionic/react";
-import { alertCircleOutline } from "ionicons/icons";
-
-import CameraFab from "../components/CameraFab";
+import { add, alertCircleOutline } from "ionicons/icons";
 import ProductCards from "../components/ProductCards";
 import UserGroceryList from "../components/UserGroceryList";
 import { GroceryList, Product } from "../data/interfaces";
@@ -113,9 +111,8 @@ const DashboardView: React.FC = () => {
         {!!TestProds.length ? (
           <>
             <ProductCards
-              canBeAdded
               products={TestProds}
-              onAddProduct={addToGroceryLists}
+              actions={[{ icon: add, callback: addToGroceryLists }]}
             />
           </>
         ) : (

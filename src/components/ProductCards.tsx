@@ -4,6 +4,7 @@
 import {
   IonAvatar,
   IonButton,
+  IonButtons,
   IonCard,
   IonCardContent,
   IonCol,
@@ -12,7 +13,6 @@ import {
   IonRow,
   IonText,
 } from "@ionic/react";
-import { add } from "ionicons/icons";
 import { Product } from "../data/interfaces";
 
 // ------------------------------------------------------------------
@@ -26,10 +26,11 @@ import "../theme/ProductCards.css";
 interface Props {
   // The list of product to be displayed
   products: Product[];
-  // Boolean to render Plus button inside the card
-  canBeAdded?: true;
-  // The callback for when a Product is added via abovesaid button
-  onAddProduct?: (prod: Product) => any;
+  //
+  actions?: {
+    icon: string;
+    callback: (prod: Product) => void | Promise<void>;
+  }[];
 }
 
 /**
@@ -41,11 +42,10 @@ interface Props {
  * @category Components
  * @subcategory Fragment
  */
-const ProductCards: React.FC<Props> = (props) => {
+const ProductCards: React.FC<Props> = ({ products, actions = [] }) => {
   // -----------------------------------------------------------------
   // L o c a l   v a r s
   // -----------------------------------------------------------------
-  const { products, canBeAdded = false, onAddProduct } = props;
 
   // -----------------------------------------------------------------
   // S t a t e
@@ -81,17 +81,19 @@ const ProductCards: React.FC<Props> = (props) => {
                 <IonText color="primary">
                   <h3>{product.name}</h3>
                 </IonText>
-                {`${product.quantity} left`}
-                {canBeAdded && !!onAddProduct && (
-                  <IonButton
-                    size="small"
-                    shape="round"
-                    slot="icon-only"
-                    onClick={() => onAddProduct(product)}
-                  >
-                    <IonIcon slot="icon-only" icon={add} />
-                  </IonButton>
-                )}
+                {`Only ${product.quantity} left`}
+                <IonButtons>
+                  {actions.map((btn) => (
+                    <IonButton
+                      size="small"
+                      shape="round"
+                      slot="icon-only"
+                      onClick={() => btn.callback(product)}
+                    >
+                      <IonIcon slot="icon-only" icon={btn.icon} />
+                    </IonButton>
+                  ))}
+                </IonButtons>
               </IonCardContent>
             </IonCard>
           </IonCol>
