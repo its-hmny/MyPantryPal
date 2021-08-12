@@ -82,3 +82,32 @@ export const getAuthUser = async (accessToken: string) => {
   // Else throws an Error
   else throw Error(ERRORS.LOGIN_ERROR);
 };
+
+/**
+ * This function handles the WebService call to get all the information
+ * avaiable about a given user, if the WeService returns an error then a
+ *  translated error is throwed
+ * @function
+ * @async
+ *
+ * @param {string} accessToken - The acess token identifying the user
+ * @return {Object} OneTimeObject - The corresponding user, as seen by the WebService
+ * @return {string} OneTimeObject.token - A string identifiying the current (search) session
+ * @return {Product[]} OneTimeObject.prodcts - The products with the given barcode found by the WS
+ */
+export const getProductWithBarcode = async (
+  accessToken: string,
+  barcode: string
+) => {
+  // Send the credentials to the WebService
+  const response = await fetch(`${baseUrl}/products?barcode=${barcode}`, {
+    method: "GET",
+    // Adds the access token to the headers
+    headers: { ...defaultHeaders, Authorization: `Bearer ${accessToken}` },
+  });
+
+  // If the user has been authenticated correctly
+  if (response.status === 200) return await response.json();
+  // Else throws an Error
+  else throw Error(ERRORS.LOGIN_ERROR);
+};
