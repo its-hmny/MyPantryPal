@@ -10,7 +10,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { add, mailUnreadSharp, remove } from "ionicons/icons";
+import { addCircle, removeCircle } from "ionicons/icons";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import ProductCards from "../components/ProductCards";
@@ -76,8 +76,8 @@ const GroceryListDeatilsView: React.FC = () => {
         <ProductCards
           products={list.products}
           actions={[
-            { icon: remove, callback: (prod) => addQuantity(prod, -1) },
-            { icon: add, callback: (prod) => addQuantity(prod, 1) },
+            { icon: removeCircle, callback: (prod) => addQuantity(prod, -1) },
+            { icon: addCircle, callback: (prod) => addQuantity(prod, 1) },
           ]}
         />
       </IonContent>

@@ -4,25 +4,17 @@
 import {
   IonCard,
   IonCardContent,
-  IonChip,
   IonContent,
-  IonIcon,
-  IonLabel,
   IonListHeader,
   IonPage,
   useIonActionSheet,
 } from "@ionic/react";
-import { add, alertCircleOutline } from "ionicons/icons";
+import { addCircle } from "ionicons/icons";
 import ProductCards from "../components/ProductCards";
 import UserGroceryList from "../components/UserGroceryList";
 import { GroceryList, Product } from "../data/interfaces";
 import { TestGroceriesList, TestProds } from "../data/tmp";
 import { useAuth } from "../providers/AuthProvider";
-
-// ------------------------------------------------------------------
-// S t y l e s
-// ------------------------------------------------------------------
-import "../theme/Dashboard.css";
 
 /**
  * Component that shows to the user a Dashboard with some recap info
@@ -108,22 +100,10 @@ const DashboardView: React.FC = () => {
 
         {/* Products that are running out list */}
         <IonListHeader>You're running out of:</IonListHeader>
-        {!!TestProds.length ? (
-          <>
-            <ProductCards
-              products={TestProds}
-              actions={[{ icon: add, callback: addToGroceryLists }]}
-            />
-          </>
-        ) : (
-          <IonChip className="user_message">
-            <IonIcon icon={alertCircleOutline} color="warning" />
-            <IonLabel>
-              No products are registered, in order to create a product scan the
-              barode and add it to your pantry
-            </IonLabel>
-          </IonChip>
-        )}
+        <ProductCards
+          products={TestProds}
+          actions={[{ icon: addCircle, callback: addToGroceryLists }]}
+        />
 
         {/* My groceries list */}
         <UserGroceryList />

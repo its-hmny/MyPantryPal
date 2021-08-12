@@ -67,14 +67,18 @@ export interface AuthUser {
  * @subcategory General
  */
 export interface Product {
+  /** The uuid of the Grocery List */
+  id: string;
   /** The name of the product */
   name: string;
   /** A brief description about the product */
   description: string;
   /** The quantity left in the user's pantry */
   quantity: number;
-  /** The barcode/id f the product */
-  barcode: number;
+  /** The barcode of the product */
+  barcode: string;
+  /** An optional image (base64 encoded) of the product */
+  img?: string;
 }
 
 /**

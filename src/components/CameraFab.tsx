@@ -16,12 +16,12 @@ import { ERRORS } from "../data/enum";
 // I n t e r f a c e s
 // ------------------------------------------------------------------
 interface Props {
-  onPhotoTaken: (photo: Photo) => Promise<void>;
+  onPhotoTaken: (photo: Photo) => void | Promise<void>;
 }
 
 /**
  * This component handles the rendering of Fab that let the user interact
- * with the camera of his phone, asking before for permission and then 
+ * with the camera of his phone, asking before for permission and then
  * calls the callback passed by the parent component upon completion
  *
  * @component

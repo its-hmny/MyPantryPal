@@ -18,11 +18,6 @@ import { ROUTES } from "../data/enum";
 import { useAuth } from "../providers/AuthProvider";
 import { signUp } from "../utils/WebService";
 
-// ------------------------------------------------------------------
-// S t y l e s
-// ------------------------------------------------------------------
-import "../theme/SignIn_SignUp.css";
-
 /**
  * This components renders the Sign Up page and allows the user to register and
  * authenticate to the WebService retrieving the JWT and redirecting him to

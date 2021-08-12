@@ -54,5 +54,5 @@ export enum ERRORS {
   REQURED_DATA = "Some required fields are empty, plase fill them up",
   LOGIN_ERROR = "There was an error and we couldn't complete the login. Please check your credentials",
   SIGNUP_ERROR = "There was an error and we couldn't complete registration process. Please try again later",
-  DATABASE_ERROR = "There was an error ith the Database setup"
+  DATABASE_ERROR = "There was an error ith the Database setup",
 }

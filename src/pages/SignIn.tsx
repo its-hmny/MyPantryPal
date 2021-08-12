@@ -17,11 +17,6 @@ import UserForm, { FormPayload } from "../components/UserForm";
 import { ROUTES } from "../data/enum";
 import { useAuth } from "../providers/AuthProvider";
 
-// ------------------------------------------------------------------
-// S t y l e s
-// ------------------------------------------------------------------
-import "../theme/SignIn_SignUp.css";
-
 /**
  * This components renders the Sign In page an allows the user to authenticate
  * to the WebService retrieving the JWT and redirecting him to the home
