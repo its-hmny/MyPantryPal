@@ -14,11 +14,7 @@ import {
   IonText,
 } from "@ionic/react";
 import { Product } from "../data/interfaces";
-
-// ------------------------------------------------------------------
-// S t y l e s
-// ------------------------------------------------------------------
-import "../theme/ProductCards.css";
+import AlertMessage from "./AlertMessage";
 
 // ------------------------------------------------------------------
 // I n t e r f a c e s
@@ -26,7 +22,9 @@ import "../theme/ProductCards.css";
 interface Props {
   // The list of product to be displayed
   products: Product[];
-  //
+  // Callback to be executed when user click on the card
+  onCardSelected?: (prod: Product) => void | Promise<void>;
+  // Array of callack and icon for multibutton cards
   actions?: {
     icon: string;
     callback: (prod: Product) => void | Promise<void>;
@@ -42,11 +40,11 @@ interface Props {
  * @category Components
  * @subcategory Fragment
  */
-const ProductCards: React.FC<Props> = ({ products, actions = [] }) => {
+const ProductCards: React.FC<Props> = (props) => {
   // -----------------------------------------------------------------
   // L o c a l   v a r s
   // -----------------------------------------------------------------
-
+  const { products, onCardSelected = () => {}, actions = [] } = props;
   // -----------------------------------------------------------------
   // S t a t e
   // -----------------------------------------------------------------
@@ -54,6 +52,12 @@ const ProductCards: React.FC<Props> = ({ products, actions = [] }) => {
   // -----------------------------------------------------------------
   // W o r k i n g   m e t h o d s
   // -----------------------------------------------------------------
+  // This memoized result is the image to be displayed in the card, it
+  // could either be the previous/current product image or a placeholder
+  const getProductImage = (product: Product) => {
+    if (!!product?.img) return `data:image/*;base64,${product.img}`;
+    else return `${process.env.PUBLIC_URL}/assets/icon/prod_placeholder.png`;
+  };
 
   // -----------------------------------------------------------------
   // R e n d e r   m e t h o d s
@@ -69,35 +73,43 @@ const ProductCards: React.FC<Props> = ({ products, actions = [] }) => {
   return (
     <IonGrid>
       <IonRow className="ion-align-items-start">
-        {products.map((product) => (
-          <IonCol size="6" key={product.barcode}>
-            <IonCard className="product_card">
-              <IonCardContent>
-                <IonAvatar>
-                  <img
-                    src={`${process.env.PUBLIC_URL}/assets/icon/prod_placeholder.png`}
-                  />
-                </IonAvatar>
-                <IonText color="primary">
-                  <h3>{product.name}</h3>
-                </IonText>
-                {`Only ${product.quantity} left`}
-                <IonButtons>
-                  {actions.map((btn) => (
-                    <IonButton
-                      size="small"
-                      shape="round"
-                      slot="icon-only"
-                      onClick={() => btn.callback(product)}
-                    >
-                      <IonIcon slot="icon-only" icon={btn.icon} />
-                    </IonButton>
-                  ))}
-                </IonButtons>
-              </IonCardContent>
-            </IonCard>
-          </IonCol>
-        ))}
+        {products.length ? (
+          products.map((product) => (
+            <IonCol size="6" key={product.id}>
+              <IonCard
+                className="product_card"
+                onClick={() => onCardSelected(product)}
+              >
+                <IonCardContent>
+                  <IonAvatar>
+                    <img src={getProductImage(product)} />
+                  </IonAvatar>
+                  <IonText color="primary">
+                    <h3>{product.name}</h3>
+                  </IonText>
+                  {`Only ${product.quantity} left`}
+                  <IonButtons>
+                    {actions.map((btn) => (
+                      <IonButton
+                        key={btn.icon}
+                        size="small"
+                        shape="round"
+                        slot="icon-only"
+                        onClick={() => btn.callback(product)}
+                      >
+                        <IonIcon slot="icon-only" icon={btn.icon} />
+                      </IonButton>
+                    ))}
+                  </IonButtons>
+                </IonCardContent>
+              </IonCard>
+            </IonCol>
+          ))
+        ) : (
+          <AlertMessage>
+            Cannot find any product, add them scanning or typing the barcode
+          </AlertMessage>
+        )}
       </IonRow>
     </IonGrid>
   );
