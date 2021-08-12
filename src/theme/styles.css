@@ -1,0 +1,59 @@
+/*
+   S I G N   I N   &   S I G N   U P   P A G E 
+*/
+/* Styling for the card embedding all the page content   */
+ion-card.form_card {
+  margin-top: 15vh;
+}
+ion-card.form_card > ion-card-header > ion-img {
+  width: 50%;
+  margin: auto;
+}
+ion-card.form_card > ion-card-content > ion-button {
+  margin-bottom: 5%;
+}
+
+/*
+   A L E R T   M E S S A G E   C O M P O N E N T
+*/
+.alert_message {
+  margin: 2% 5% 2% 5%;
+  height: fit-content;
+  font-size: 17px;
+}
+.alert_message > ion-icon {
+  width: 20%;
+}
+
+/*
+   P R O D U C T S   C A R D S   C O M P O N E N T
+*/
+.product_card {
+  margin: 8px;
+}
+.product_card > .card-content-ios,
+.card-content-md {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.product_card > .card-content-ios > ion-text > h3 {
+  text-align: center;
+}
+
+/*
+   P R O D U C T   F O R M   C O M P O N E N T
+*/
+/* Styling for the card embedding all the page content   */
+ion-card.product_form {
+  margin-top: 10%;
+}
+ion-card.product_form > ion-card-header > ion-avatar {
+  width: 15vh;
+  height: 15vh;
+  margin: auto;
+}
+ion-card.product_form > ion-card-content > ion-button {
+  margin-bottom: 5%;
+}
