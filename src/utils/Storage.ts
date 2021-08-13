@@ -36,6 +36,15 @@ export const readFromStorage = async <T>(key: string) => {
   else return null;
 };
 
+/**
+ * This function completely removes all the data saved with the given key
+ * Please be aware that upon completion all the data saved with the given
+ * key will be forever lost
+ * @function
+ * @async
+ *
+ * @param {string} key
+ */
 export const purgeFromStorage = async (key: string) => {
   await Storage.remove({ key });
 };

@@ -36,35 +36,51 @@ interface Props {
 }
 
 /**
- * TODO COMMENTS
+ * This View present the user two different interfaces to add a product
+ * for the first time to their Pantry, the user can scan the barcode and then
+ * clone/fork the product from the hints presented or alternatively if no
+ * hint is correct the user can upload from scratch the new products
  *
  * @component
  * @category Components
  * @subcategory View
  */
-const ScanProdctView: React.FC<Props> = (props) => {
+const AddProdctView: React.FC<Props> = (props) => {
   // -----------------------------------------------------------------
   // L o c a l   v a r s
   // -----------------------------------------------------------------
   // Retrieves data from the parent component
   const { accessToken, onComplete, onCancel } = props;
+
   // -----------------------------------------------------------------
   // S t a t e
   // -----------------------------------------------------------------
-  //
+  // Internal state representing the current active tab
   const [activeTab, setTab] = useState<string>("import");
 
-  // "Buffer" containing all the data inserted or added by the user
-  // const [formData, setFormData] = useState<Partial<Product>>({});
-
+  // "Buffer" containing the local prouct hints (the product with the same barcode in the Database)
   const [localHints, setLocalHints] = useState<Product[]>([]);
+  // "Buffer" containing the WebService prouct hints
   const [webServiceHints, setWebServiceHints] = useState<Product[]>([]);
 
   // -----------------------------------------------------------------
   // W o r k i n g   m e t h o d s
   // -----------------------------------------------------------------
+  /**
+   * This function updates both the local and webservice product hints
+   * whenever called, if no barcode is provided then the function
+   * resets the hints to empty arrays and returns
+   * @function
+   * @async
+   *
+   * @param  {string | undefined | null} barcode - The barcode
+   */
   const updateProductHint = async (barcode?: string | null) => {
-    if (!barcode) return;
+    if (!barcode) {
+      setWebServiceHints([]);
+      setLocalHints([]);
+      return;
+    }
 
     // Search in the local DB for a match
     // TODO IMPLEMENT
@@ -75,11 +91,17 @@ const ScanProdctView: React.FC<Props> = (props) => {
     setWebServiceHints(res.products);
   };
 
-  const selectProductHint = async () => {};
-
-  // -----------------------------------------------------------------
-  // R e n d e r   m e t h o d s
-  // -----------------------------------------------------------------
+  /**
+   * This function handles the forking of a new product selected by the
+   * user and adds it to the Pantry (default quanity: 1), the product
+   * can now evolve indipendently from is "origin"
+   * @function
+   * @async
+   */
+  const onHintSelected = async () => {
+    // TODO IMPLEMENT
+    console.log("BP__ onHintSelected");
+  };
 
   // -----------------------------------------------------------------
   // u s e E f f e c t
@@ -144,20 +166,8 @@ const ScanProdctView: React.FC<Props> = (props) => {
 
         {activeTab === "create" && <ProductForm onSave={console.log} />}
       </IonContent>
-
-      {/* Page footer, contaiing the user possible outcomes 
-      <IonFooter>
-        <IonRow className="ion-justify-content-evenly">
-          <IonButton color="danger" onClick={onCancel}>
-            <IonIcon icon={close} /> Cancel
-          </IonButton>
-          <IonButton onClick={onSubmit}>
-            <IonIcon icon={save} /> Save
-          </IonButton>
-        </IonRow>
-      </IonFooter>*/}
     </IonPage>
   );
 };
 
-export default ScanProdctView;
+export default AddProdctView;

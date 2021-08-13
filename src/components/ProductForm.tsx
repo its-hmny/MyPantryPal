@@ -18,24 +18,27 @@ import {
   IonText,
   IonTextarea,
   useIonAlert,
+  useIonLoading,
 } from "@ionic/react";
-import { loadingController } from "@ionic/core";
-import { useMemo, useState } from "react";
+import { save, close } from "ionicons/icons";
+import { useState, useMemo } from "react";
 import { ERRORS } from "../data/enum";
 import { Product } from "../data/interfaces";
 import CameraFab from "./CameraFab";
-import { save, close } from "ionicons/icons";
 
 // ------------------------------------------------------------------
 // I n t e r f a c e s
 // ------------------------------------------------------------------
 interface Props {
+  // Initial and optional product data to be used by the form (for update)
   product?: Product;
   onSave: (product: Product) => void | Promise<void>;
 }
 
 /**
- * TODO COMMENT
+ * This fragment handles the form rendering that lets the user update
+ * or create a new Product, it handles directly the database update and
+ * call the callback upon completion
  *
  * @component
  * @category Components
@@ -45,8 +48,10 @@ const ProductForm: React.FC<Props> = ({ product, onSave }) => {
   // -----------------------------------------------------------------
   // L o c a l   v a r s
   // -----------------------------------------------------------------
-  // Helper function to present lert dialog to the user
+  // Helper function to present an alert dialog to the user
   const [showAlert] = useIonAlert();
+  // Helper function to present a loding popup to the user
+  const [showLoading, dismissLoading] = useIonLoading();
 
   // Default values for the form
   const defaultValues = {
@@ -78,6 +83,9 @@ const ProductForm: React.FC<Props> = ({ product, onSave }) => {
    * it expects that any form item has its own name attribute and
    * that the same name is used to update the value
    * @function
+   *
+   * @param {GenricObject} e - The event object as returned by the components
+   * TODO REMOVE ANY ANNOTATION
    */
   const handleChange = (e: any) => {
     if (!!e.target)
@@ -96,8 +104,7 @@ const ProductForm: React.FC<Props> = ({ product, onSave }) => {
    */
   const onSubmit = async () => {
     // Creates and renders the loading dialog/modal
-    const loading = await loadingController.create({ message: "Loading..." });
-    await loading.present();
+    showLoading("Loading...");
     try {
       // TODO ADD VALIDATIONs
       if (true) {
@@ -113,13 +120,9 @@ const ProductForm: React.FC<Props> = ({ product, onSave }) => {
       });
     } finally {
       // Removes the loading spinner
-      await loading.dismiss();
+      dismissLoading();
     }
   };
-
-  // -----------------------------------------------------------------
-  // R e n d e r   m e t h o d s
-  // -----------------------------------------------------------------
 
   // -----------------------------------------------------------------
   // u s e E f f e c t
@@ -142,6 +145,8 @@ const ProductForm: React.FC<Props> = ({ product, onSave }) => {
             Here you can manage some data about the product changing, for
             example, the name or the photo
           </IonText>
+
+          {/* The form container */}
           <IonList inset>
             <IonItem>
               <IonLabel>Name:</IonLabel>
@@ -189,6 +194,7 @@ const ProductForm: React.FC<Props> = ({ product, onSave }) => {
 
       <CameraFab
         onPhotoTaken={(photo) =>
+          // Creates a mock event-like object and pass it to the generic event handler
           handleChange({ target: { name: "img", value: photo.base64String } })
         }
       />

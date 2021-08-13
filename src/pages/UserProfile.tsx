@@ -18,11 +18,6 @@ import CameraFab from "../components/CameraFab";
 import UserForm from "../components/UserForm";
 import { useAuth } from "../providers/AuthProvider";
 
-// ------------------------------------------------------------------
-// S t y l e s
-// ------------------------------------------------------------------
-import "../theme/UserProfile.css";
-
 /**
  * This page allows the user to update his wn profile, changing or adding
  * name and surname fields or uplaod a profile picture. It saves all changes
@@ -64,10 +59,6 @@ const UserProfileView: React.FC = () => {
   const handleImageChange = async (newAvatar: Photo) => {
     await updateUser({ profile_image: newAvatar });
   };
-
-  // -----------------------------------------------------------------
-  // R e n d e r   m e t h o d s
-  // -----------------------------------------------------------------
 
   // -----------------------------------------------------------------
   // u s e E f f e c t

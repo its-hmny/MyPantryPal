@@ -20,7 +20,9 @@ import { GroceryList } from "../data/interfaces";
 import { TestGroceriesList } from "../data/tmp";
 
 /**
- * TODO COMMENT
+ * This fragment handles the rendering of the Grocery List created by
+ * the user, the list item are "slidable" and every interaction with
+ *  the user is handled by the component itself
  *
  * @component
  * @category Components
@@ -41,37 +43,43 @@ const UserGroceryLists: React.FC = () => {
   // W o r k i n g   m e t h o d s
   // -----------------------------------------------------------------
   /**
-   * TODO COMMENT
+   * This function redirects the user to the detail page of the selected
+   * Grocery List where the user will get all the details about the given list
+   * @function
+   *
    * @param {GroceryList} list - The selected list
    */
-  const go2GroceryListDetail = (list: GroceryList) => {
+  const go2GroceryListDetail = (list: GroceryList) =>
     history.push(ROUTES.GROCERY_LIST_DETAILS.replace(":id", list.id));
-  };
 
   /**
-   * TODO COMMENT
+   * This function handles the "evasion" of the GroceryList in which basycally
+   * all the product are moved from the selected GroceryList to the Pantry.
+   * Is supposed (but not limited) to be used after the user has purchased
+   * all the product in the list.
+   * Note: After this action the list wll be empty but not deleted
    * @function
    * @async
    *
    * @param {GroceryList} list - The list to be evaded
    */
   const evadeGroceryList = async (list: GroceryList) => {
+    // TODO IMPLEMENT
     console.log("BP__ onGroceryListEvasion");
   };
 
   /**
-   * TODO COMMENT
+   * This function handles the removal of a list from the database with
+   * all the data that are not needed anymore in the database itself
    * @function
    * @async
    *
    * @param {GroceryList} list - The list to be deleted
    */
   const deleteGroceryList = async (list: GroceryList) => {
+    // TODO IMPLEMENT
     console.log("BP__ onGroceryListDeletion");
   };
-  // -----------------------------------------------------------------
-  // R e n d e r   m e t h o d s
-  // -----------------------------------------------------------------
 
   // -----------------------------------------------------------------
   // u s e E f f e c t

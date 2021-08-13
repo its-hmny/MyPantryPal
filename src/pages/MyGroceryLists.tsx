@@ -28,6 +28,7 @@ const MyGroceryListsView: React.FC = () => {
   // -----------------------------------------------------------------
   // L o c a l   v a r s
   // -----------------------------------------------------------------
+  // Helper function to present an alert dialog to the user
   const [presentAlert] = useIonAlert();
 
   // -----------------------------------------------------------------
@@ -62,10 +63,6 @@ const MyGroceryListsView: React.FC = () => {
     console.log("BP__ onListCreated", newList);
     // TestGroceriesList.push({ ...newList, products: [] } as GroceryList);
   };
-
-  // -----------------------------------------------------------------
-  // R e n d e r   m e t h o d s
-  // -----------------------------------------------------------------
 
   // -----------------------------------------------------------------
   // u s e E f f e c t

@@ -4,9 +4,8 @@
 import { IonPage } from "@ionic/react";
 import { useHistory } from "react-router";
 
-
 /**
- * Component that shows to the user a simple text with debugging 
+ * Component that shows to the user a simple text with debugging
  * pourposes
  *
  * @component
@@ -26,10 +25,6 @@ const WelcomeView: React.FC = () => {
 
   // -----------------------------------------------------------------
   // W o r k i n g   m e t h o d s
-  // -----------------------------------------------------------------
-
-  // -----------------------------------------------------------------
-  // R e n d e r   m e t h o d s
   // -----------------------------------------------------------------
 
   // -----------------------------------------------------------------

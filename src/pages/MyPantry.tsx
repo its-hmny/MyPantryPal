@@ -26,7 +26,7 @@ import ProductCards from "../components/ProductCards";
 import { Product } from "../data/interfaces";
 import { TestProds } from "../data/tmp";
 import { useAuth } from "../providers/AuthProvider";
-import ScanProdctView from "./ScanProduct";
+import AddProdctView from "./AddProduct";
 
 // ------------------------------------------------------------------
 // I n t e r f a c e s
@@ -37,7 +37,9 @@ interface FilterOptions {
 }
 
 /**
- * TODO COMMENT
+ * This view renders the user's Pantry, the user can interact with the
+ * product inside it, changing the quantity, visualize or update the
+ * details about the single prodcut or creating new product as well
  *
  * @component
  * @category Components
@@ -50,42 +52,67 @@ const MyPantryView: React.FC = () => {
   // Retrieve user Access Token, in order to make requests
   const { accessToken } = useAuth();
 
-  const handleCancel = () => dismissModal();
-
-  // TODO COMMENT
-  const [presentModal, dismissModal] = useIonModal(ScanProdctView, {
+  // Only for scopes reasons
+  const closeModal = () => dismissModal();
+  // Helper functions to open and dismiss a Modal view
+  const [presentModal, dismissModal] = useIonModal(AddProdctView, {
     accessToken,
-    onComplete: handleCancel,
-    onCancel: handleCancel,
+    onComplete: closeModal,
+    onCancel: closeModal,
   });
 
   // -----------------------------------------------------------------
   // S t a t e
   // -----------------------------------------------------------------
+  // State containing all the filtering options set by the user
   const [filterOpts, setFilterOpts] = useState<FilterOptions>();
 
   // -----------------------------------------------------------------
   // W o r k i n g   m e t h o d s
   // -----------------------------------------------------------------
+  /**
+   * This function filters the Pantry product list with the option provided
+   *  by the user and updates the states in order to render the new list
+   * @function
+   * @async
+   */
   const filterPantry = async () => {
+    // TODO IMPLEMENT
     console.log("BP__", filterOpts);
   };
 
+  /**
+   * This function redirects the user to the detail page. in which the user
+   * can update some info about the product selected
+   * @function
+   * @async
+   *
+   * @param {Product} prod - The product selected by the user
+   */
   const go2ProductDetail = (prod: Product) => {
+    // TODO IMPLEMENT
     console.log("BP__ onProductRedirect", prod);
   };
 
+  /**
+   * This functions handles the increment/decrement of the quantity of
+   * a given product in the pantry, the quantity is changed by the
+   * value of the "diff" param
+   * @function
+   * @async
+   *
+   * @param {Product} prod - The Product of which the quantity must be changed
+   * @param {number} diff - The increment/decrement of the quantity
+   */
   const addQuantity = async (prod: Product, diff: number) => {
+    // TODO IMPLEMENT
     console.log("BP__ onAddQuantity", prod, diff);
   };
 
   // -----------------------------------------------------------------
-  // R e n d e r   m e t h o d s
-  // -----------------------------------------------------------------
-
-  // -----------------------------------------------------------------
   // u s e E f f e c t
   // -----------------------------------------------------------------
+  // Whenever the filters changes, re-executes the query with new params
   useEffect(() => {
     filterPantry();
   }, [filterOpts]);
@@ -132,6 +159,7 @@ const MyPantryView: React.FC = () => {
         </IonToolbar>
       </IonHeader>
 
+      {/* The filtered product list */}
       <IonContent>
         <ProductCards
           products={TestProds}

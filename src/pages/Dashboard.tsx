@@ -54,10 +54,9 @@ const DashboardView: React.FC = () => {
     // Generate all the possible action/button based on the avaiable lists
     const actions = TestGroceriesList.map((gl) => ({
       text: gl.name,
-      //role: "",
       handler: async () => await addProduct2GroceryList(gl, prod),
     }));
-    // Present the action sheet with all the button needed
+    // Present the action sheet with all the button needed, (a "Cancel" button as well)
     await presentAction({
       header: `Add "${prod.name}" to one of your grocery lists`,
       buttons: [...actions, { text: "Cancel", role: "destructive" }],
@@ -65,7 +64,9 @@ const DashboardView: React.FC = () => {
   };
 
   /**
-   * TODO COMMENT
+   * This function takes care of adding a product to a grocery list, both
+   * of them selected previously by the user, eventually updating also the
+   * local data as well as the database data
    * @function
    * @async
    *
@@ -73,13 +74,9 @@ const DashboardView: React.FC = () => {
    * @param {Product} prod - The product to be added
    */
   const addProduct2GroceryList = async (list: GroceryList, prod: Product) => {
+    // TODO IMPLEMENT
     console.log("BP__", list, prod);
-    // TODO add query execution here
   };
-
-  // -----------------------------------------------------------------
-  // R e n d e r   m e t h o d s
-  // -----------------------------------------------------------------
 
   // -----------------------------------------------------------------
   // u s e E f f e c t
@@ -91,7 +88,7 @@ const DashboardView: React.FC = () => {
   return (
     <IonPage>
       <IonContent>
-        {/* On Android this sucks */}
+        {/* Greetings card */}
         <IonCard>
           <IonCardContent>
             {`Good Evening, ${user?.firstname ?? user?.username}`}
@@ -108,9 +105,7 @@ const DashboardView: React.FC = () => {
         {/* My groceries list */}
         <UserGroceryList />
 
-        {/* Camera fab to start scanning items 
-        <CameraFab onPhotoTaken={async () => {}} />
-        */}
+        {/* TODO ADD MODAL OPENER TO SCAN PRODS */}
       </IonContent>
     </IonPage>
   );

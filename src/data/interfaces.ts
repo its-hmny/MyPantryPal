@@ -1,7 +1,6 @@
 /**
  * I N T E R F A C E S
  */
-
 import { Photo } from "@capacitor/camera";
 import React from "react";
 import { ROUTES, ROUTE_KEYS } from "./enum";

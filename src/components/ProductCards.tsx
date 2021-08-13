@@ -44,7 +44,9 @@ const ProductCards: React.FC<Props> = (props) => {
   // -----------------------------------------------------------------
   // L o c a l   v a r s
   // -----------------------------------------------------------------
+  // Extropalates props, eventually with fallback values
   const { products, onCardSelected = () => {}, actions = [] } = props;
+
   // -----------------------------------------------------------------
   // S t a t e
   // -----------------------------------------------------------------
@@ -58,10 +60,6 @@ const ProductCards: React.FC<Props> = (props) => {
     if (!!product?.img) return `data:image/*;base64,${product.img}`;
     else return `${process.env.PUBLIC_URL}/assets/icon/prod_placeholder.png`;
   };
-
-  // -----------------------------------------------------------------
-  // R e n d e r   m e t h o d s
-  // -----------------------------------------------------------------
 
   // -----------------------------------------------------------------
   // u s e E f f e c t

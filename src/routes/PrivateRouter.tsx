@@ -11,7 +11,6 @@ import {
   IonTabButton,
   IonRouterOutlet,
 } from "@ionic/react";
-
 import PAGES from "../data/pages";
 import { ROUTES } from "../data/enum";
 
@@ -27,15 +26,13 @@ const PrivateRouter: React.FC = () => {
   // -----------------------------------------------------------------
   // L o c a l   v a r s   &   H o o k s
   // -----------------------------------------------------------------
+  // Extrapolates the private page array
   const { privatePages } = PAGES;
 
   // -----------------------------------------------------------------
   // S t a t e
   // -----------------------------------------------------------------
-
-  // -----------------------------------------------------------------
-  // W o r k i n g   m e t h o d s
-  // -----------------------------------------------------------------
+  // Generate a route for each private page
   const privateRoutes = useMemo(
     () =>
       privatePages.map((page) => (
@@ -49,6 +46,7 @@ const PrivateRouter: React.FC = () => {
     [privatePages]
   );
 
+  // Generate a TabBar button only for each route with an "icon" field defined
   const tabBarButtons = useMemo(
     () =>
       privatePages
@@ -63,7 +61,7 @@ const PrivateRouter: React.FC = () => {
   );
 
   // -----------------------------------------------------------------
-  // R e n d e r   m e t h o d s
+  // W o r k i n g   m e t h o d s
   // -----------------------------------------------------------------
 
   // -----------------------------------------------------------------

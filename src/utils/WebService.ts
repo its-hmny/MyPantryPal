@@ -109,5 +109,5 @@ export const getProductWithBarcode = async (
   // If the user has been authenticated correctly
   if (response.status === 200) return await response.json();
   // Else throws an Error
-  else throw Error(ERRORS.LOGIN_ERROR);
+  else throw Error(ERRORS.GENERAL_ERROR);
 };

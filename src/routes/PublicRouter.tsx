@@ -4,7 +4,6 @@
 import { useMemo } from "react";
 import { Redirect, Route } from "react-router";
 import { IonRouterOutlet } from "@ionic/react";
-
 import PAGES from "../data/pages";
 import { ROUTES } from "../data/enum";
 
@@ -20,6 +19,7 @@ const PublicRouter: React.FC = () => {
   // -----------------------------------------------------------------
   // L o c a l   v a r s   &   H o o k s
   // -----------------------------------------------------------------
+  // Extrapolate the public page array
   const { publicPages } = PAGES;
 
   // -----------------------------------------------------------------
@@ -29,6 +29,7 @@ const PublicRouter: React.FC = () => {
   // -----------------------------------------------------------------
   // W o r k i n g   m e t h o d s
   // -----------------------------------------------------------------
+  // Generate a route for each public page
   const publicRoutes = useMemo(
     () =>
       publicPages.map((page) => (
@@ -41,10 +42,6 @@ const PublicRouter: React.FC = () => {
       )),
     [publicPages]
   );
-
-  // -----------------------------------------------------------------
-  // R e n d e r   m e t h o d s
-  // -----------------------------------------------------------------
 
   // -----------------------------------------------------------------
   // u s e E f f e c t

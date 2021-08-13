@@ -1,20 +1,19 @@
 // ------------------------------------------------------------------
 // I m p o r t s
 // ------------------------------------------------------------------
-import { useContext, createContext, useState, useEffect } from "react";
+import { useIonAlert, IonLoading, useIonLoading } from "@ionic/react";
 import moment from "moment";
+import { useState, useEffect, useContext, createContext } from "react";
+import { useHistory } from "react-router";
 import { FormPayload } from "../components/UserForm";
+import { ERRORS, ROUTES } from "../data/enum";
 import { AuthUser } from "../data/interfaces";
-import { getAuthUser, signIn } from "../utils/WebService";
 import {
-  purgeFromStorage,
   readFromStorage,
   saveToStorage,
+  purgeFromStorage,
 } from "../utils/Storage";
-import { loadingController } from "@ionic/core";
-import { IonLoading, useIonAlert } from "@ionic/react";
-import { ERRORS, ROUTES } from "../data/enum";
-import { useHistory } from "react-router";
+import { signIn, getAuthUser } from "../utils/WebService";
 
 // ------------------------------------------------------------------
 // I n t e r f a c e s
@@ -51,6 +50,8 @@ export const AuthProvider: React.FC = ({ children }) => {
   const history = useHistory();
   // Helper function to present lert dialog to the user
   const [showAlert] = useIonAlert();
+  // Helper function to present a loading dialog to the user
+  const [showLoading, dismissLoading] = useIonLoading();
 
   // Temporary data used if no data is avaiable or the data has expired
   const defaultData = {
@@ -156,10 +157,7 @@ export const AuthProvider: React.FC = ({ children }) => {
    * @async
    */
   const logout = async () => {
-    const loading = await loadingController.create({
-      message: "Logging out...",
-    });
-    await loading.present();
+    showLoading("Logging out...");
     try {
       // Resets the data to the default value
       setUserData(defaultData);
@@ -175,13 +173,9 @@ export const AuthProvider: React.FC = ({ children }) => {
       });
     } finally {
       // Removes the loading spinner
-      await loading.dismiss();
+      dismissLoading();
     }
   };
-
-  // -----------------------------------------------------------------
-  // R e n d e r   m e t h o d s
-  // -----------------------------------------------------------------
 
   // -----------------------------------------------------------------
   // u s e E f f e c t

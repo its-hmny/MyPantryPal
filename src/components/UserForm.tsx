@@ -8,8 +8,8 @@ import {
   IonLabel,
   IonList,
   useIonAlert,
+  useIonLoading,
 } from "@ionic/react";
-import { loadingController } from "@ionic/core";
 import { useState } from "react";
 import { ERRORS } from "../data/enum";
 import { useAuth } from "../providers/AuthProvider";
@@ -56,6 +56,8 @@ const UserForm: React.FC<Props> = (props) => {
 
   // Helper function to present lert dialog to the user
   const [showAlert] = useIonAlert();
+  // Helper function to present a loding popup to the user
+  const [showLoading, dismissLoading] = useIonLoading();
 
   // Default values for the form
   const defaultFormValues = {
@@ -80,6 +82,9 @@ const UserForm: React.FC<Props> = (props) => {
    * it expects that any form item has its own name attribute and
    * that the same name is used to update the value
    * @function
+   *
+   * @param {GenricObject} e - The event object as returned by the components
+   * TODO REMOVE ANY ANNOTATION
    */
   const handleChange = (e: any) => {
     if (!!e.target)
@@ -95,8 +100,7 @@ const UserForm: React.FC<Props> = (props) => {
    */
   const submitWrapper = async () => {
     // Creates and renders the loading dialog/modal
-    const loading = await loadingController.create({ message: "Loading..." });
-    await loading.present();
+    showLoading("Loading...");
     try {
       const { username, email, password } = formData;
       // Data validation, checks that all the field are defined
@@ -113,13 +117,9 @@ const UserForm: React.FC<Props> = (props) => {
       });
     } finally {
       // Removes the loading spinner
-      await loading.dismiss();
+      dismissLoading();
     }
   };
-
-  // -----------------------------------------------------------------
-  // R e n d e r   m e t h o d s
-  // -----------------------------------------------------------------
 
   // -----------------------------------------------------------------
   // u s e E f f e c t

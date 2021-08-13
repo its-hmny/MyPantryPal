@@ -7,9 +7,14 @@ import {
   CameraSource,
   Photo,
 } from "@capacitor/camera";
-import { IonFab, IonFabButton, IonIcon, useIonAlert } from "@ionic/react";
+import {
+  IonFab,
+  IonFabButton,
+  IonIcon,
+  isPlatform,
+  useIonAlert,
+} from "@ionic/react";
 import { camera } from "ionicons/icons";
-import { isPlatform } from "@ionic/core";
 import { ERRORS } from "../data/enum";
 
 // ------------------------------------------------------------------
@@ -82,10 +87,6 @@ const CameraFab: React.FC<Props> = ({ onPhotoTaken }) => {
       });
     }
   };
-
-  // -----------------------------------------------------------------
-  // R e n d e r   m e t h o d s
-  // -----------------------------------------------------------------
 
   // -----------------------------------------------------------------
   // u s e E f f e c t

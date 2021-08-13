@@ -5,7 +5,8 @@ import { IonChip, IonIcon, IonLabel } from "@ionic/react";
 import { alertCircleOutline } from "ionicons/icons";
 
 /**
- * Component that shows to the user a simple alert message
+ * Component that shows to the user a simple alert message, the message
+ * is either a string/text or a child component mounted inside the IonChip
  *
  * @component
  * @category Components
@@ -22,10 +23,6 @@ const AlertMessage: React.FC = ({ children }) => {
 
   // -----------------------------------------------------------------
   // W o r k i n g   m e t h o d s
-  // -----------------------------------------------------------------
-
-  // -----------------------------------------------------------------
-  // R e n d e r   m e t h o d s
   // -----------------------------------------------------------------
 
   // -----------------------------------------------------------------
