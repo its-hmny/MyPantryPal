@@ -58,7 +58,6 @@ const ProductForm: React.FC<Props> = ({ product, onSave }) => {
     id: "",
     name: "",
     description: "",
-    quantity: 0,
     barcode: "",
   };
 

@@ -85,7 +85,7 @@ const ProductCards: React.FC<Props> = (props) => {
                   <IonText color="primary">
                     <h3>{product.name}</h3>
                   </IonText>
-                  {`Only ${product.quantity} left`}
+                  {product.quantity ? `Only ${product.quantity} left` : null}
                   <IonButtons>
                     {actions.map((btn) => (
                       <IonButton

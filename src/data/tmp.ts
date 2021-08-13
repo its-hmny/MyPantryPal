@@ -4,7 +4,6 @@ export const TestProds: Product[] = [
   {
     name: "Salmone",
     description: "Il salmone e' buono",
-    quantity: 2,
     barcode: "123",
     id: "KWBQFGJVNBIJvwef'N'nn'weosvn'RWN",
   },
@@ -28,7 +27,6 @@ export const TestGroceriesList: GroceryList[] = [
   {
     id: "13",
     name: "Lista della Coop con un nome molto lungo",
-    date: 16663846738,
     products: [],
   },
   {
@@ -39,7 +37,6 @@ export const TestGroceriesList: GroceryList[] = [
   {
     id: "15",
     name: "Lista dell'Esselunga",
-    date: 166638463293923,
     products: TestProds,
   },
 ];

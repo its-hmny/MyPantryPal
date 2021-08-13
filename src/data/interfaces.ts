@@ -73,7 +73,7 @@ export interface Product {
   /** A brief description about the product */
   description: string;
   /** The quantity left in the user's pantry */
-  quantity: number;
+  quantity?: number;
   /** The barcode of the product */
   barcode: string;
   /** An optional image (base64 encoded) of the product */
@@ -94,8 +94,6 @@ export interface GroceryList {
   id: string;
   /** The name of the groceries list */
   name: string;
-  /** The date in which the user would like to shop the given list */
-  date?: number;
   /** The list of product to buy */
   products: Product[];
 }
