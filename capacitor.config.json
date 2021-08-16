@@ -1,6 +1,6 @@
 {
   "appId": "com.hmny.MyPantryPal",
-  "appName": "test",
+  "appName": "My Pantry Pal",
   "webDir": "build",
   "bundledWebRuntime": false
 }

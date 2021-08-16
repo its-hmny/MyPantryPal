@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@capacitor-community/barcode-scanner": "^2.0.1",
     "@capacitor-community/sqlite": "^3.1.3-3",
     "@capacitor/android": "^3.1.1",
     "@capacitor/app": "1.0.2",
@@ -51,7 +52,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "android": "ionic build && ionic cap copy && ionic cap sync && ionic cap open android"
   },
   "eslintConfig": {
     "extends": [
