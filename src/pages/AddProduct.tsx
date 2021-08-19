@@ -1,6 +1,7 @@
 // -----------------------------------------------------------------
 // I m p o r t s
 // -----------------------------------------------------------------
+import { BarcodeScanner } from "@capacitor-community/barcode-scanner";
 import {
   IonButton,
   IonButtons,
@@ -17,11 +18,13 @@ import {
   IonSegmentButton,
   IonTitle,
   IonToolbar,
+  useIonAlert,
 } from "@ionic/react";
 import { qrCode } from "ionicons/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProductCards from "../components/ProductCards";
 import ProductForm from "../components/ProductForm";
+import { ERRORS } from "../data/enum";
 import { Product } from "../data/interfaces";
 import { TestProds } from "../data/tmp";
 import { getProductWithBarcode } from "../utils/WebService";
@@ -52,6 +55,9 @@ const AddProdctView: React.FC<Props> = (props) => {
   // Retrieves data from the parent component
   const { accessToken, onComplete, onCancel } = props;
 
+  // Helper function to present alert dialog to the user
+  const [showAlert] = useIonAlert();
+
   // -----------------------------------------------------------------
   // S t a t e
   // -----------------------------------------------------------------
@@ -66,6 +72,45 @@ const AddProdctView: React.FC<Props> = (props) => {
   // -----------------------------------------------------------------
   // W o r k i n g   m e t h o d s
   // -----------------------------------------------------------------
+  /**
+   * This function start the barcode scanning process and then, if the scan
+   * has found a barcode then the product hints are updated based upon the
+   * newly scanned barcode
+   * @function
+   * @async
+   */
+  const onStartScan = async () => {
+    try {
+      // Ask and check for user permission
+      const { granted } = await BarcodeScanner.checkPermission({ force: true });
+      if (!granted) throw Error(ERRORS.PERMISSION_ERROR);
+
+      // Hides all the WebView from user eyes, in order to let the user
+      // see the ScannerView below
+      document.body.style.background = "transparent";
+      document.body.style.opacity = "0";
+      BarcodeScanner.hideBackground();
+
+      // Start scanning and wait for a result
+      const result = await BarcodeScanner.startScan();
+
+      // If the result has content, then updates the product hint
+      if (result.hasContent) updateProductHint(result.content);
+    } catch (err) {
+      // Presents an error message to the user
+      showAlert({
+        header: "Error",
+        message: err.message,
+        buttons: ["Ok"],
+      });
+    } finally {
+      // Reverts the WebView to the previous settings
+      document.body.style.background = "";
+      document.body.style.opacity = "1";
+      BarcodeScanner.showBackground();
+    }
+  };
+
   /**
    * This function updates both the local and webservice product hints
    * whenever called, if no barcode is provided then the function
@@ -106,6 +151,11 @@ const AddProdctView: React.FC<Props> = (props) => {
   // -----------------------------------------------------------------
   // u s e E f f e c t
   // -----------------------------------------------------------------
+  // onComponentMount prepare the barcode scanner in order to reduce
+  // wait time before user
+  useEffect(() => {
+    BarcodeScanner.prepare();
+  }, []);
 
   // -----------------------------------------------------------------
   // T e m p l a t e
@@ -146,10 +196,9 @@ const AddProdctView: React.FC<Props> = (props) => {
                   name="barcode"
                   debounce={500}
                   inputMode="text"
-                  autocapitalize="words"
                   onIonChange={(e) => updateProductHint(e.detail.value)}
                 />
-                <IonIcon icon={qrCode} onClick={alert} />
+                <IonIcon icon={qrCode} onClick={onStartScan} />
               </IonItem>
             </IonList>
 

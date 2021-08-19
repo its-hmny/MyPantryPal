@@ -1,6 +1,7 @@
 // ------------------------------------------------------------------
 // I m p o r t s
 // ------------------------------------------------------------------
+import { BarcodeScanner } from "@capacitor-community/barcode-scanner";
 import {
   IonAvatar,
   IonButton,
@@ -20,7 +21,7 @@ import {
   useIonAlert,
   useIonLoading,
 } from "@ionic/react";
-import { save, close } from "ionicons/icons";
+import { save, close, qrCode } from "ionicons/icons";
 import { useState, useMemo } from "react";
 import { ERRORS } from "../data/enum";
 import { Product } from "../data/interfaces";
@@ -92,6 +93,46 @@ const ProductForm: React.FC<Props> = ({ product, onSave }) => {
 
     // TODO REMOVE
     console.log("BP__ onChange", e.target.name, e.target.value);
+  };
+
+  /**
+   * This function start the barcode scanning process and then, if the scan
+   * has found a barcode sets the respective fields in the form properly 
+   * @function
+   * @async
+   */
+  const onStartScan = async () => {
+    try {
+      // Ask and check for user permission
+      const { granted } = await BarcodeScanner.checkPermission({ force: true });
+      if (!granted) throw Error(ERRORS.PERMISSION_ERROR);
+
+      // Hides all the WebView from user eyes, in order to let the user
+      // see the ScannerView below
+      document.body.style.background = "transparent";
+      document.body.style.opacity = "0";
+      BarcodeScanner.hideBackground();
+
+      // Start scanning and wait for a result
+      const result = await BarcodeScanner.startScan();
+
+      // If the result has content, then updates the value in the form
+      if (result.hasContent) {
+        handleChange({ target: { name: "barcode", value: result.content } });
+      }
+    } catch (err) {
+      // Presents an error message to the user
+      showAlert({
+        header: "Error",
+        message: err.message,
+        buttons: ["Ok"],
+      });
+    } finally {
+      // Reverts the WebView to the previous settings
+      document.body.style.background = "";
+      document.body.style.opacity = "1";
+      BarcodeScanner.showBackground();
+    }
   };
 
   /**
@@ -167,6 +208,7 @@ const ProductForm: React.FC<Props> = ({ product, onSave }) => {
                 value={formData.barcode}
                 onIonChange={handleChange}
               />
+              <IonIcon icon={qrCode} onClick={onStartScan} />
             </IonItem>
             <IonItem>
               <IonLabel position="stacked">Description:</IonLabel>

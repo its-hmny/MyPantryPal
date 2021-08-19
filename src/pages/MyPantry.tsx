@@ -142,21 +142,6 @@ const MyPantryView: React.FC = () => {
             }
           />
         </IonToolbar>
-        <IonToolbar>
-          <IonSelect
-            interface="popover"
-            placeholder="Select a category"
-            onIonChange={(e) =>
-              setFilterOpts({ ...filterOpts, category: e.detail.value })
-            }
-          >
-            <IonSelectOption value="female">Female</IonSelectOption>
-            <IonSelectOption value="male">Male</IonSelectOption>
-            <IonSelectOption color="danger" value="">
-              Unfiltered
-            </IonSelectOption>
-          </IonSelect>
-        </IonToolbar>
       </IonHeader>
 
       {/* The filtered product list */}
