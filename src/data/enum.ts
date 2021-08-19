@@ -20,7 +20,7 @@ export enum ROUTES {
   GROCERIES_LIST = "/groceries-list",
   GROCERY_LIST_DETAILS = "/groceries-list/:id",
   PROFILE = "/profile",
-  DEBUG = "/debug"
+  DEBUG = "/debug",
 }
 
 /**
@@ -41,7 +41,7 @@ export enum ROUTE_KEYS {
   GROCERIES_LIST = "Grocery Lists",
   GROCERY_LIST_DETAILS = "Grocery List Details",
   PROFILE = "Profile",
-  DEBUG = "Debug"
+  DEBUG = "Debug",
 }
 
 /**
@@ -57,5 +57,18 @@ export enum ERRORS {
   LOGIN_ERROR = "There was an error and we couldn't complete the login. Please check your credentials",
   SIGNUP_ERROR = "There was an error and we couldn't complete registration process. Please try again later",
   DATABASE_ERROR = "There was an error ith the Database setup",
-  PERMISSION_ERROR = "Please grant permission requested in order to use this functionality"
+  PERMISSION_ERROR = "Please grant permission requested in order to use this functionality",
+}
+
+/**
+ * Enum of avaiable tables in SQLite database
+ * @enum {string}
+ * @alias DatabaseTables
+ *
+ * @category Enum
+ */
+export enum DB_TABLES {
+  PRODUCTS = "Products",
+  GROCERY_LIST = "GroceryLists",
+  QUANTITIES = "Quantities",
 }

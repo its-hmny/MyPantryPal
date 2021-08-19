@@ -1,11 +1,10 @@
 // -----------------------------------------------------------------
 // I m p o r t s
 // -----------------------------------------------------------------
-import { BarcodeScanner } from "@capacitor-community/barcode-scanner";
-import { IonContent, IonPage } from "@ionic/react";
+import { IonContent, IonPage, setupConfig, useIonAlert } from "@ionic/react";
+import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
-import ScanBarcode from "../components/ScanBarcode";
-import { ERRORS } from "../data/enum";
+import { getGroceryLists, initDatabase } from "../utils/Database";
 
 /**
  * Component that shows to the user a simple text with debugging
@@ -21,18 +20,32 @@ const WelcomeView: React.FC = () => {
   // -----------------------------------------------------------------
   // Access the history stack of the browser/phone
   const history = useHistory();
+  const [showAlert] = useIonAlert();
 
   // -----------------------------------------------------------------
   // S t a t e
   // -----------------------------------------------------------------
+  const [tmp, setTmp] = useState<string>("Initial");
 
   // -----------------------------------------------------------------
   // W o r k i n g   m e t h o d s
   // -----------------------------------------------------------------
+  const setup = async () => {
+    try {
+      await initDatabase();
+      const res = await getGroceryLists();
+      setTmp(JSON.stringify(res, undefined, 2));
+    } catch (err) {
+      showAlert(err.message);
+    }
+  };
 
   // -----------------------------------------------------------------
   // u s e E f f e c t
   // -----------------------------------------------------------------
+  useEffect(() => {
+    setup();
+  }, []);
 
   // -----------------------------------------------------------------
   // T e m p l a t e
@@ -40,8 +53,8 @@ const WelcomeView: React.FC = () => {
   return (
     <IonPage>
       <IonContent>
-        <ScanBarcode />
         <p>{`You're currently on the route ${history.location.pathname}`}</p>
+        <p>{tmp}</p>
       </IonContent>
     </IonPage>
   );
