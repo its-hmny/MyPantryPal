@@ -32,7 +32,6 @@ const WelcomeView: React.FC = () => {
   // -----------------------------------------------------------------
   const setup = async () => {
     try {
-      await initDatabase();
       const res = await getGroceryLists();
       setTmp(JSON.stringify(res, undefined, 2));
     } catch (err) {

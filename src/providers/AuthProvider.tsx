@@ -8,6 +8,7 @@ import { useHistory } from "react-router";
 import { FormPayload } from "../components/UserForm";
 import { ERRORS, ROUTES } from "../data/enum";
 import { AuthUser } from "../data/interfaces";
+import { initDatabase } from "../utils/Database";
 import {
   readFromStorage,
   saveToStorage,
@@ -78,6 +79,9 @@ export const AuthProvider: React.FC = ({ children }) => {
    * @async
    */
   const initAuthProvider = async () => {
+    // Init the database
+    await initDatabase();
+    
     // Get the current timestamp
     const now = moment();
     // Retrieve the precedent data if existent
