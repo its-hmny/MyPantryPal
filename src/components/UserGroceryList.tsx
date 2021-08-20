@@ -12,12 +12,15 @@ import {
   IonList,
   IonListHeader,
   IonText,
+  useIonViewWillEnter,
 } from "@ionic/react";
 import { checkmark, trash } from "ionicons/icons";
+import { useState } from "react";
 import { useHistory } from "react-router";
 import { ROUTES } from "../data/enum";
 import { GroceryList } from "../data/interfaces";
 import { TestGroceriesList } from "../data/tmp";
+import { getGroceryLists } from "../utils/Database";
 
 /**
  * This fragment handles the rendering of the Grocery List created by
@@ -38,6 +41,7 @@ const UserGroceryLists: React.FC = () => {
   // -----------------------------------------------------------------
   // S t a t e
   // -----------------------------------------------------------------
+  const [groceryList, setGroceryLists] = useState<GroceryList[] | undefined>(undefined);
 
   // -----------------------------------------------------------------
   // W o r k i n g   m e t h o d s
@@ -84,6 +88,9 @@ const UserGroceryLists: React.FC = () => {
   // -----------------------------------------------------------------
   // u s e E f f e c t
   // -----------------------------------------------------------------
+  useIonViewWillEnter(async () => {
+    setGroceryLists(await getGroceryLists());
+  }, []);
 
   // -----------------------------------------------------------------
   // T e m p l a t e
@@ -91,7 +98,7 @@ const UserGroceryLists: React.FC = () => {
   return (
     <IonList>
       <IonListHeader>Your grocery lists:</IonListHeader>
-      {TestGroceriesList.map((list) => (
+      {groceryList?.map((list) => (
         <IonItemSliding key={list.id}>
           <IonItemOptions side="start">
             <IonItemOption
