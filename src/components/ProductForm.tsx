@@ -24,7 +24,7 @@ import {
 import { save, close, qrCode } from "ionicons/icons";
 import { useState, useMemo } from "react";
 import { ERRORS } from "../data/enum";
-import { Product } from "../data/interfaces";
+import { GenericObject, Product } from "../data/interfaces";
 import CameraFab from "./CameraFab";
 
 // ------------------------------------------------------------------
@@ -85,19 +85,15 @@ const ProductForm: React.FC<Props> = ({ product, onSave }) => {
    * @function
    *
    * @param {GenricObject} e - The event object as returned by the components
-   * TODO REMOVE ANY ANNOTATION
    */
-  const handleChange = (e: any) => {
+  const handleChange = (e: GenericObject) => {
     if (!!e.target)
       setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-
-    // TODO REMOVE
-    console.log("BP__ onChange", e.target.name, e.target.value);
   };
 
   /**
    * This function start the barcode scanning process and then, if the scan
-   * has found a barcode sets the respective fields in the form properly 
+   * has found a barcode sets the respective fields in the form properly
    * @function
    * @async
    */

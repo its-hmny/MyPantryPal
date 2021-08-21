@@ -16,20 +16,14 @@ import { ROUTES, ROUTE_KEYS } from "./enum";
  * @subcategory General
  */
 export interface Page {
-  /** The route must be exactly right in order to be accessed */
-  //exact: boolean;
   /** The relative path of the route */
   path: ROUTES;
   /** The key or UUID that identifies uniquely the route (more human readable) */
   key: ROUTE_KEYS;
   /** The component to be mounted for that route */
   component: React.FC;
-  /** The layout to be used for that route (TODO ?)*/
-  //layout: React.FC;
   /** Optional icon for the Route in presence of link to it (e.g. Drawer/Tabs) */
   icon?: string;
-  /** Nested route that extends the current one */
-  //nested?: Array<Page>;
 }
 
 /**
@@ -96,4 +90,18 @@ export interface GroceryList {
   name: string;
   /** The list of product to buy */
   products: Product[];
+}
+
+/**
+ * Interface that to represent a Generic object, with a non specific shape
+ * 
+ * @interface
+ * @alias GenericObject
+ *
+ * @category Interface
+ * @subcategory General
+ */
+export interface GenericObject {
+  /** Generic property without a defined type value */
+  [key: string]: any;
 }

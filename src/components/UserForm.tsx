@@ -12,6 +12,7 @@ import {
 } from "@ionic/react";
 import { useState } from "react";
 import { ERRORS } from "../data/enum";
+import { GenericObject } from "../data/interfaces";
 import { useAuth } from "../providers/AuthProvider";
 
 // ------------------------------------------------------------------
@@ -84,9 +85,8 @@ const UserForm: React.FC<Props> = (props) => {
    * @function
    *
    * @param {GenricObject} e - The event object as returned by the components
-   * TODO REMOVE ANY ANNOTATION
    */
-  const handleChange = (e: any) => {
+  const handleChange = (e: GenericObject) => {
     if (!!e.target)
       setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
