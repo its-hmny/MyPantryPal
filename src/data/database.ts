@@ -1,5 +1,7 @@
 import { DB_TABLES } from "./enum";
 
+export const USER_PANTRY_ID = "0";
+
 const DatabaseConfig = {
   database: "MyPantryPal",
   encrypted: false,
@@ -26,7 +28,7 @@ const DatabaseConfig = {
         { column: "name", value: "TEXT NOT NULL" },
       ],
       values: [
-        [0, "My Pantry"],
+        [USER_PANTRY_ID, "My Pantry"],
         [1, "Macellaio"],
         [2, "Fruttivendolo"],
         [3, "Lista Conad"],
@@ -39,6 +41,8 @@ const DatabaseConfig = {
         { column: "listId", value: "INTEGER NOT NULL" },
         { column: "productId", value: "INTEGER NOT NULL" },
         { column: "quantity", value: "INTEGER NOT NULL" },
+
+        // TODO THIS IS NOT WORKING
         //{
         //  foreignkey: "listId, productId",
         //  value: "REFERENCES GroceryLists(id), Products(id) ON DELETE CASCADE",

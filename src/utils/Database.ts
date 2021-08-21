@@ -6,7 +6,7 @@ import {
   SQLiteConnection,
   SQLiteDBConnection,
 } from "@capacitor-community/sqlite";
-import DatabaseConfig from "../data/database";
+import DatabaseConfig, { USER_PANTRY_ID } from "../data/database";
 import { DB_TABLES, ERRORS } from "../data/enum";
 import { GroceryList, Product } from "../data/interfaces";
 
@@ -43,17 +43,70 @@ export const initDatabase = async () => {
  * @function
  * @async
  *
- * @return {Promise<GroceryList[]>}
+ * @return {Promise<GroceryList[] | undefined>}
  */
 export const getGroceryLists = async () => {
   // Checks that the DB is open and working properly
   if (!database.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
-  // Executes the query
+
+  // Get a list of all the grocery list avaiaible
+  const lists = (
+    await database.query(`
+    SELECT * FROM ${DB_TABLES.GROCERY_LIST}
+    WHERE id != ${USER_PANTRY_ID};
+  `)
+  ).values;
+
+  if (!lists) return undefined;
+
+  return await Promise.all(
+    // Now for every list queries the products that are in them
+    lists.map(async (list) => {
+      const products = (
+        await database.query(`
+      SELECT * 
+      FROM ${DB_TABLES.QUANTITIES} q, ${DB_TABLES.PRODUCTS} p 
+      WHERE q.listId == ${list.id} AND q.productId == p.id;
+    `)
+      ).values;
+      // Then returns a comprehemsive payload interface compliant
+      return { ...list, products };
+    })
+  );
+};
+
+/**
+ * TODO COMMENT
+ * @function
+ * @async
+ *
+ * @return {Promise<GroceryList | undefined>}
+ */
+export const getGroceryList = async (listId: string) => {
+  // Checks that the DB is open and working properly
+  if (!database.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
+
+  // Get a list of all the grocery list avaiaible
   const res = await database.query(`
     SELECT * FROM ${DB_TABLES.GROCERY_LIST}
-    WHERE id != 0;
+    WHERE id == ${listId};
   `);
-  return res.values;
+
+  if (!res.values || !res.values[0]) return undefined;
+
+  const list = res.values[0];
+  // Now queries the products that are in it
+  const products =
+    (
+      await database.query(`
+      SELECT * 
+      FROM ${DB_TABLES.QUANTITIES} q, ${DB_TABLES.PRODUCTS} p 
+      WHERE q.listId == ${listId} AND q.productId == p.id;
+    `)
+    ).values || [];
+
+  // Then returns a comprehemsive payload interface compliant
+  return { ...list, products };
 };
 
 /**
@@ -68,13 +121,12 @@ export const insertGroceryList = async (list: GroceryList) => {
   if (!database.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
   // Destructures the list object
   const { id, name } = list;
-  // Executes the query
-  const res = await database.query(`
+  // Creates a new entry
+  // TODO MANAGE id generation
+  await database.query(`
     INSERT INTO ${DB_TABLES.GROCERY_LIST} id, name
     VALUES("${id}", "${name}");
   `);
-  // TODO CHECK
-  return res.values;
 };
 
 /**
@@ -90,11 +142,16 @@ export const deleteGroceryList = async (listId: string) => {
   if (!database.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
 
   // Executes the query
-  // TODO ADD MANUALLY CASCADING FOR QUANTITY RELATION
   await database.query(`
-    DELETE FROM ${DB_TABLES.GROCERY_LIST}
-    WHERE id != ${listId};
+    DELETE FROM ${DB_TABLES.QUANTITIES}
+    WHERE listId == ${listId} AND listId != 0;
   `);
+
+  // Executes the query
+  await database.query(`
+  DELETE FROM ${DB_TABLES.GROCERY_LIST}
+  WHERE id == ${listId} AND id != 0;
+`);
 };
 
 // ------------------------------------------------------------------
@@ -148,7 +205,7 @@ export const getProduct = async (productId: string) => {
  * @async
  *
  * @param {string} productId - The uuid of the Product
- * @return {Promise<Product>}
+ * @return {Promise<Product[]>}
  */
 export const getProductsBy = async (key: "name" | "barcode", value: string) => {
   // Checks that the DB is open and working properly
@@ -158,7 +215,8 @@ export const getProductsBy = async (key: "name" | "barcode", value: string) => {
     SELECT * FROM ${DB_TABLES.PRODUCTS}
     WHERE ${key} == "${value}";
   `);
-  return res.values;
+
+  return res.values as Product[];
 };
 
 /**
