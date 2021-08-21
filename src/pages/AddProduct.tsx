@@ -27,7 +27,7 @@ import ProductForm from "../components/ProductForm";
 import { ERRORS } from "../data/enum";
 import { Product } from "../data/interfaces";
 import { getProductsBy } from "../utils/Database";
-import { getProductWithBarcode } from "../utils/WebService";
+import { getProductsWithBarcode } from "../utils/WebService";
 
 // ------------------------------------------------------------------
 // I n t e r f a c e s
@@ -141,9 +141,11 @@ const AddProdctView: React.FC<Props> = (props) => {
     }
 
     // Search in the local DB for a match
-    setLocalHints((await getProductsBy("barcode", barcode)) ?? []);
+    setLocalHints(await getProductsBy("barcode", barcode));
     // If no match is found then ask the WebService
-    setWsRes(await getProductWithBarcode(accessToken, barcode));
+    const res = await getProductsWithBarcode(accessToken, barcode);
+    const { token, products } = res;
+    setWsRes({ sessionId: token, hints: products });
   };
 
   /**
@@ -216,10 +218,7 @@ const AddProdctView: React.FC<Props> = (props) => {
             <ProductCards products={localHints} onCardSelected={alert} />
 
             <IonListHeader>Product shared by other users:</IonListHeader>
-            <ProductCards
-              products={wsRes.hints}
-              onCardSelected={console.log}
-            />
+            <ProductCards products={wsRes.hints} onCardSelected={console.log} />
           </>
         )}
 

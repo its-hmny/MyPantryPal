@@ -12,13 +12,17 @@ import {
   IonTitle,
   IonToolbar,
   useIonAlert,
+  useIonLoading,
 } from "@ionic/react";
 import { add } from "ionicons/icons";
 import UserGroceryLists from "../components/UserGroceryList";
 import { GroceryList } from "../data/interfaces";
+import { insertGroceryList } from "../utils/Database";
 
 /**
- * TODO COMMENT
+ * View that show to the user all the Groceries List avaible/created
+ * by him and gives the possibilities to create a new one, delete
+ * or evade an already existent one and see the details view of said list
  *
  * @component
  * @category Components
@@ -30,6 +34,8 @@ const MyGroceryListsView: React.FC = () => {
   // -----------------------------------------------------------------
   // Helper function to present an alert dialog to the user
   const [presentAlert] = useIonAlert();
+  // Helper function to present a loading dialog to the user
+  const [showLoading, dismissLoading] = useIonLoading();
 
   // -----------------------------------------------------------------
   // S t a t e
@@ -51,7 +57,7 @@ const MyGroceryListsView: React.FC = () => {
     });
 
   /**
-   * This function handles the insertion in the Daabase (and local state)
+   * This function handles the insertion in the Database (and local state)
    * of a new Grocery List created by the user, the functio interpolates as
    * well every eventual default fields since only the name is provided by the user
    * @function
@@ -60,8 +66,14 @@ const MyGroceryListsView: React.FC = () => {
    * @param {Partial<GroceryList>} newList
    */
   const onListCreated = async (newList: Partial<GroceryList>) => {
-    console.log("BP__ onListCreated", newList);
-    // TestGroceriesList.push({ ...newList, products: [] } as GroceryList);
+    showLoading("Adding your new list...");
+    try {
+      await insertGroceryList(newList);
+    } catch (err) {
+      presentAlert(err.message);
+    } finally {
+      dismissLoading();
+    }
   };
 
   // -----------------------------------------------------------------
@@ -73,7 +85,6 @@ const MyGroceryListsView: React.FC = () => {
   // -----------------------------------------------------------------
   return (
     <IonPage>
-      {/* Page header maybe to be removed (TODO) */}
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="end" color="primary">

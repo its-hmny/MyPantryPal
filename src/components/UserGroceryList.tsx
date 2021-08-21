@@ -18,9 +18,15 @@ import {
 import { checkmark, trash } from "ionicons/icons";
 import { useState } from "react";
 import { useHistory } from "react-router";
+import { USER_PANTRY_ID } from "../data/database";
 import { ROUTES } from "../data/enum";
 import { GroceryList } from "../data/interfaces";
-import { deleteGroceryList, getGroceryLists } from "../utils/Database";
+import {
+  addToList,
+  deleteGroceryList,
+  getGroceryLists,
+  truncateGroceryList,
+} from "../utils/Database";
 import AlertMessage from "./AlertMessage";
 
 /**
@@ -71,8 +77,19 @@ const UserGroceryLists: React.FC = () => {
    * @param {GroceryList} list - The list to be evaded
    */
   const evadeGroceryList = async (list: GroceryList) => {
-    // TODO IMPLEMENT
-    console.log("BP__ onGroceryListEvasion");
+    try {
+      const { id, products } = list;
+      await Promise.all(
+        // Add the products to the Pantry
+        products.map((prod) =>
+          addToList(USER_PANTRY_ID, prod.id, prod.quantity ?? 0)
+        )
+      );
+      // Truncate the Grocery List to evaded
+      await truncateGroceryList(id);
+    } catch (err) {
+      showAlert(err.message);
+    }
   };
 
   /**
@@ -85,8 +102,8 @@ const UserGroceryLists: React.FC = () => {
    */
   const onGroceryListDelete = async (toDelete: GroceryList) => {
     try {
+      // Basic args checking
       if (!toDelete.id || !groceryList?.length) return;
-      
       // Removes the grocery list from the Database
       await deleteGroceryList(toDelete.id);
       // Then removes it as well from the local copy

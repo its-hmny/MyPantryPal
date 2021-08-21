@@ -9,14 +9,15 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  useIonAlert,
 } from "@ionic/react";
 import { addCircle, removeCircle } from "ionicons/icons";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useHistory, useParams } from "react-router";
 import ProductCards from "../components/ProductCards";
-import { ROUTES } from "../data/enum";
+import { ERRORS, ROUTES } from "../data/enum";
 import { GroceryList, Product } from "../data/interfaces";
-import { getGroceryList } from "../utils/Database";
+import { addToList, getGroceryList } from "../utils/Database";
 
 /**
  * This view shows the user all the detals about a Grocery List identified
@@ -34,6 +35,10 @@ const GroceryListDeatilsView: React.FC = () => {
   // -----------------------------------------------------------------
   // Get the route id param
   const { id: listId } = useParams<{ id: string }>();
+  // Access the history stack of the browser/phone
+  const history = useHistory();
+  // Helper function to present lert dialog to the user
+  const [showAlert] = useIonAlert();
 
   // -----------------------------------------------------------------
   // S t a t e
@@ -53,7 +58,13 @@ const GroceryListDeatilsView: React.FC = () => {
    * @async
    */
   const getGroceryListDetails = async () => {
-    setList(await getGroceryList(listId));
+    try {
+      const listDetails = await getGroceryList(listId);
+      if (listDetails === undefined) throw Error(ERRORS.LIST_NOT_FOUND);
+      setList(listDetails);
+    } catch (err) {
+      showAlert(err.message, [{ text: "Ok", handler: () => history.goBack() }]);
+    }
   };
 
   /**
@@ -67,8 +78,11 @@ const GroceryListDeatilsView: React.FC = () => {
    * @param {number} diff - The increment/decrement of the quantity
    */
   const addQuantity = async (prod: Product, diff: number) => {
-    // TODO IMPLEMENT
-    console.log("BP__ onAddQuantity", prod, diff);
+    try {
+      await addToList(listId, prod.id, diff);
+    } catch (err) {
+      showAlert(err.message);
+    }
   };
 
   // -----------------------------------------------------------------

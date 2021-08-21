@@ -16,10 +16,10 @@ import { useState } from "react";
 import ProductCards from "../components/ProductCards";
 import UserGroceryList from "../components/UserGroceryList";
 import { USER_PANTRY_ID } from "../data/database";
+import { ERRORS } from "../data/enum";
 import { GroceryList, Product } from "../data/interfaces";
-import { TestGroceriesList, TestProds } from "../data/tmp";
 import { useAuth } from "../providers/AuthProvider";
-import { getGroceryList } from "../utils/Database";
+import { addToList, getGroceryList, getGroceryLists } from "../utils/Database";
 
 /**
  * Component that shows to the user a Dashboard with some recap info
@@ -59,11 +59,13 @@ const DashboardView: React.FC = () => {
    *
    * @param {Product} prod - The product selected
    */
-  const addToGroceryLists = async (prod: Product) => {
+  const onAddToGroceryLists = async (prod: Product) => {
+    const options = await getGroceryLists();
+    if (options === undefined) throw Error(ERRORS.GENERAL_ERROR);
     // Generate all the possible action/button based on the avaiable lists
-    const actions = TestGroceriesList.map((gl) => ({
+    const actions = options.map((gl) => ({
       text: gl.name,
-      handler: async () => await addProduct2GroceryList(gl, prod),
+      handler: async () => await addProductToGroceryList(gl, prod),
     }));
     // Present the action sheet with all the button needed, (a "Cancel" button as well)
     await presentAction({
@@ -82,8 +84,12 @@ const DashboardView: React.FC = () => {
    * @param {GroceryList} list - The destionation list
    * @param {Product} prod - The product to be added
    */
-  const addProduct2GroceryList = async (list: GroceryList, prod: Product) => {
-    // TODO IMPLEMENT
+  const addProductToGroceryList = async (list: GroceryList, prod: Product) => {
+    try {
+      await addToList(list.id, prod.id, 1);
+    } catch (err) {
+      showAlert(err.message);
+    }
   };
 
   // -----------------------------------------------------------------
@@ -92,7 +98,9 @@ const DashboardView: React.FC = () => {
   // onViewMount it will fetch all the "running low" products
   useIonViewWillEnter(async () => {
     try {
-      setLowProduct(await getGroceryList(USER_PANTRY_ID));
+      const userPantry = await getGroceryList(USER_PANTRY_ID);
+      if (userPantry === undefined) return;
+      setLowProduct(userPantry.products);
     } catch (err) {
       showAlert(err.message);
     }
@@ -115,7 +123,7 @@ const DashboardView: React.FC = () => {
         <IonListHeader>You're running out of:</IonListHeader>
         <ProductCards
           products={lowProduct}
-          actions={[{ icon: addCircle, callback: addToGroceryLists }]}
+          actions={[{ icon: addCircle, callback: onAddToGroceryLists }]}
         />
 
         {/* My groceries list */}
