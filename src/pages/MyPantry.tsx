@@ -21,7 +21,7 @@ import {
 } from "ionicons/icons";
 import { useEffect, useState } from "react";
 import ProductCards from "../components/ProductCards";
-import { USER_PANTRY_ID } from "../data/database";
+import { USER_PANTRY_ID } from "../data/dbConfig";
 import { Product } from "../data/interfaces";
 import { useAuth } from "../providers/AuthProvider";
 import { getGroceryList } from "../utils/Database";

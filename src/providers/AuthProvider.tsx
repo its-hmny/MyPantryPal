@@ -8,7 +8,7 @@ import { useHistory } from "react-router";
 import { FormPayload } from "../components/UserForm";
 import { ERRORS, ROUTES } from "../data/enum";
 import { AuthUser } from "../data/interfaces";
-import { initDatabase } from "../utils/Database";
+import { database, initDatabase } from "../utils/Database";
 import {
   readFromStorage,
   saveToStorage,
@@ -79,26 +79,34 @@ export const AuthProvider: React.FC = ({ children }) => {
    * @async
    */
   const initAuthProvider = async () => {
-    // Init the database
-    await initDatabase();
-    
-    // Get the current timestamp
-    const now = moment();
-    // Retrieve the precedent data if existent
-    const previousData = await readFromStorage<AuthData>("user_data");
+    try {
+      showLoading("Loading previous data");
+      // Init & setup the database
+      await initDatabase();
 
-    // If the data doen't exist or the access token has expired, set the state
-    // as if the user has not been logged, (SignIn view)
-    if (!previousData || now.isAfter(moment.unix(previousData.expiresIn))) {
-      setUserData(defaultData);
-      return;
+      // Get the current timestamp
+      const now = moment();
+      // Retrieve the precedent data if existent
+      const previousData = await readFromStorage<AuthData>("user_data");
+
+      // If the data doen't exist or the access token has expired, set the state
+      // as if the user has not been logged, (SignIn view)
+      if (!previousData || now.isAfter(moment.unix(previousData.expiresIn))) {
+        // Logs out the user
+        await logout();
+        return;
+      }
+
+      // If the access token is still valid, loads the previous user
+      setUserData({
+        ...previousData,
+        isLoggedIn: true,
+      });
+    } catch (err) {
+      showAlert(err.message);
+    } finally {
+      dismissLoading();
     }
-
-    // If the access token is still valid, loads the previous user
-    setUserData({
-      ...previousData,
-      isLoggedIn: true,
-    });
   };
 
   /**
@@ -187,8 +195,13 @@ export const AuthProvider: React.FC = ({ children }) => {
   // onMount retrieve and check the data about the previous authUser
   useEffect(() => {
     initAuthProvider();
+    // onUnmount closes the database
+    return () => {
+      database?.close();
+    };
   }, []);
 
+  //window.alert(JSON.stringify(userData));
   // -----------------------------------------------------------------
   // T e m p l a t e
   // -----------------------------------------------------------------
@@ -198,9 +211,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     >
       {children}
     </AuthContext.Provider>
-  ) : (
-    <IonLoading isOpen message={"Loading previous data"} />
-  );
+  ) : null;
 };
 
 // Custom hook to retrieve the authentcated user data

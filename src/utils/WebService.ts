@@ -3,6 +3,7 @@
 // ------------------------------------------------------------------
 import { FormPayload } from "../components/UserForm";
 import { ERRORS } from "../data/enum";
+import { Product } from "../data/interfaces";
 
 // Since the WebService doesn't have CORS enabled this proxy setup whats needed
 const proxyServerUrl = "https://cors-anywhere.herokuapp.com/";
@@ -93,17 +94,17 @@ export const getAuthUser = async (accessToken: string) => {
  * @param {string} accessToken - The acess token identifying the user
  * @return {Object} OneTimeObject - The corresponding user, as seen by the WebService
  * @return {string} OneTimeObject.token - A string identifiying the current (search) session
- * @return {Product[]} OneTimeObject.prodcts - The products with the given barcode found by the WS
+ * @return {Product[]} OneTimeObject.products - The products with the given barcode found by the WS
  */
-export const getProductWithBarcode = async (
-  accessToken: string,
+export const getProductsWithBarcode = async (
+  accToken: string,
   barcode: string
-) => {
+): Promise<{ token: string; products: Product[] }> => {
   // Send the credentials to the WebService
   const response = await fetch(`${baseUrl}/products?barcode=${barcode}`, {
     method: "GET",
     // Adds the access token to the headers
-    headers: { ...defaultHeaders, Authorization: `Bearer ${accessToken}` },
+    headers: { ...defaultHeaders, Authorization: `Bearer ${accToken}` },
   });
 
   // If the user has been authenticated correctly

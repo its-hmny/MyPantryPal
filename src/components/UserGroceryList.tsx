@@ -18,7 +18,7 @@ import {
 import { checkmark, trash } from "ionicons/icons";
 import { useState } from "react";
 import { useHistory } from "react-router";
-import { USER_PANTRY_ID } from "../data/database";
+import { USER_PANTRY_ID } from "../data/dbConfig";
 import { ROUTES } from "../data/enum";
 import { GroceryList } from "../data/interfaces";
 import {

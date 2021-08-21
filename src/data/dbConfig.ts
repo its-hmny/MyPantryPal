@@ -12,7 +12,7 @@ const DatabaseConfig = {
     {
       name: DB_TABLES.PRODUCTS,
       schema: [
-        { column: "id", value: "INTEGER UNIQUE PRIMARY KEY NOT NULL" },
+        { column: "id", value: "TEXT UNIQUE PRIMARY KEY NOT NULL" },
         { column: "name", value: "TEXT UNIQUE NOT NULL" },
         { column: "description", value: "TEXT NOT NULL" },
         { column: "barcode", value: "TEXT NOT NULL" },
@@ -24,22 +24,22 @@ const DatabaseConfig = {
     {
       name: DB_TABLES.GROCERY_LIST,
       schema: [
-        { column: "id", value: "INTEGER UNIQUE PRIMARY KEY NOT NULL" },
+        { column: "id", value: "TEXT UNIQUE PRIMARY KEY NOT NULL" },
         { column: "name", value: "TEXT NOT NULL" },
       ],
       values: [
         [USER_PANTRY_ID, "My Pantry"],
-        [1, "Macellaio"],
-        [2, "Fruttivendolo"],
-        [3, "Lista Conad"],
+        ["1", "Macellaio"],
+        ["2", "Fruttivendolo"],
+        ["3", "Lista Conad"]
       ],
     },
 
     {
       name: DB_TABLES.QUANTITIES,
       schema: [
-        { column: "listId", value: "INTEGER NOT NULL" },
-        { column: "productId", value: "INTEGER NOT NULL" },
+        { column: "listId", value: "TEXT NOT NULL" },
+        { column: "productId", value: "TEXT NOT NULL" },
         { column: "quantity", value: "INTEGER NOT NULL" },
 
         // TODO THIS IS NOT WORKING

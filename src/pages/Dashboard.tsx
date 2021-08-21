@@ -15,7 +15,8 @@ import { addCircle } from "ionicons/icons";
 import { useState } from "react";
 import ProductCards from "../components/ProductCards";
 import UserGroceryList from "../components/UserGroceryList";
-import { USER_PANTRY_ID } from "../data/database";
+import { USER_PANTRY_ID } from "../data/dbConfig";
+
 import { ERRORS } from "../data/enum";
 import { GroceryList, Product } from "../data/interfaces";
 import { useAuth } from "../providers/AuthProvider";
