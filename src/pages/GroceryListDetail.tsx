@@ -16,7 +16,7 @@ import { useParams } from "react-router";
 import ProductCards from "../components/ProductCards";
 import { ROUTES } from "../data/enum";
 import { GroceryList, Product } from "../data/interfaces";
-import { TestGroceriesList } from "../data/tmp";
+import { getGroceryList } from "../utils/Database";
 
 /**
  * This view shows the user all the detals about a Grocery List identified
@@ -53,8 +53,7 @@ const GroceryListDeatilsView: React.FC = () => {
    * @async
    */
   const getGroceryListDetails = async () => {
-    // TODO IMPLEMENT
-    setList(TestGroceriesList.find((l) => l.id === listId) ?? null);
+    setList(await getGroceryList(listId));
   };
 
   /**

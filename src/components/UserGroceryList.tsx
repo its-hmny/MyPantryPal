@@ -12,6 +12,7 @@ import {
   IonList,
   IonListHeader,
   IonText,
+  useIonAlert,
   useIonViewWillEnter,
 } from "@ionic/react";
 import { checkmark, trash } from "ionicons/icons";
@@ -19,8 +20,8 @@ import { useState } from "react";
 import { useHistory } from "react-router";
 import { ROUTES } from "../data/enum";
 import { GroceryList } from "../data/interfaces";
-import { TestGroceriesList } from "../data/tmp";
-import { getGroceryLists } from "../utils/Database";
+import { deleteGroceryList, getGroceryLists } from "../utils/Database";
+import AlertMessage from "./AlertMessage";
 
 /**
  * This fragment handles the rendering of the Grocery List created by
@@ -37,11 +38,13 @@ const UserGroceryLists: React.FC = () => {
   // -----------------------------------------------------------------
   // Access the history stack of the browser/phone
   const history = useHistory();
+  // Helper function to present lert dialog to the user
+  const [showAlert] = useIonAlert();
 
   // -----------------------------------------------------------------
   // S t a t e
   // -----------------------------------------------------------------
-  const [groceryList, setGroceryLists] = useState<GroceryList[] | undefined>(undefined);
+  const [groceryList, setGroceryLists] = useState<GroceryList[] | null>(null);
 
   // -----------------------------------------------------------------
   // W o r k i n g   m e t h o d s
@@ -80,16 +83,29 @@ const UserGroceryLists: React.FC = () => {
    *
    * @param {GroceryList} list - The list to be deleted
    */
-  const deleteGroceryList = async (list: GroceryList) => {
-    // TODO IMPLEMENT
-    console.log("BP__ onGroceryListDeletion");
+  const onGroceryListDelete = async (toDelete: GroceryList) => {
+    try {
+      if (!toDelete.id || !groceryList?.length) return;
+      
+      // Removes the grocery list from the Database
+      await deleteGroceryList(toDelete.id);
+      // Then removes it as well from the local copy
+      setGroceryLists(groceryList.filter((list) => list.id !== toDelete.id));
+    } catch (err) {
+      showAlert(err.message);
+    }
   };
 
   // -----------------------------------------------------------------
   // u s e E f f e c t
   // -----------------------------------------------------------------
+  // onViewMount it will fetch all the Grocery List avaiable
   useIonViewWillEnter(async () => {
-    setGroceryLists(await getGroceryLists());
+    try {
+      setGroceryLists((await getGroceryLists()) ?? null);
+    } catch (err) {
+      showAlert(err.message);
+    }
   }, []);
 
   // -----------------------------------------------------------------
@@ -98,37 +114,43 @@ const UserGroceryLists: React.FC = () => {
   return (
     <IonList>
       <IonListHeader>Your grocery lists:</IonListHeader>
-      {groceryList?.map((list) => (
-        <IonItemSliding key={list.id}>
-          <IonItemOptions side="start">
-            <IonItemOption
-              color="secondary"
-              onClick={() => evadeGroceryList(list)}
-            >
-              <IonIcon icon={checkmark} /> Done
-            </IonItemOption>
-          </IonItemOptions>
-          <IonItem onClick={() => go2GroceryListDetail(list)}>
-            <IonAvatar slot="start">
-              <img src={`${process.env.PUBLIC_URL}/assets/icon/list.png`} />
-            </IonAvatar>
-            <IonLabel>
-              <h1>{list.name}</h1>
-              <IonText color="primary">
-                <h5>{`Contains ${list.products.length} products`}</h5>
-              </IonText>
-            </IonLabel>
-          </IonItem>
-          <IonItemOptions side="end">
-            <IonItemOption
-              color="danger"
-              onClick={() => deleteGroceryList(list)}
-            >
-              Delete <IonIcon icon={trash} />
-            </IonItemOption>
-          </IonItemOptions>
-        </IonItemSliding>
-      ))}
+      {!!groceryList?.length ? (
+        groceryList.map((list) => (
+          <IonItemSliding key={list.id}>
+            <IonItemOptions side="start">
+              <IonItemOption
+                color="secondary"
+                onClick={() => evadeGroceryList(list)}
+              >
+                <IonIcon icon={checkmark} /> Done
+              </IonItemOption>
+            </IonItemOptions>
+            <IonItem onClick={() => go2GroceryListDetail(list)}>
+              <IonAvatar slot="start">
+                <img src={`${process.env.PUBLIC_URL}/assets/icon/list.png`} />
+              </IonAvatar>
+              <IonLabel>
+                <h1>{list.name}</h1>
+                <IonText color="primary">
+                  <h5>{`Contains ${list.products.length} products`}</h5>
+                </IonText>
+              </IonLabel>
+            </IonItem>
+            <IonItemOptions side="end">
+              <IonItemOption
+                color="danger"
+                onClick={() => onGroceryListDelete(list)}
+              >
+                Delete <IonIcon icon={trash} />
+              </IonItemOption>
+            </IonItemOptions>
+          </IonItemSliding>
+        ))
+      ) : (
+        <AlertMessage>
+          Cannot find any grocery list, add them from the "Grocery List" page
+        </AlertMessage>
+      )}
     </IonList>
   );
 };

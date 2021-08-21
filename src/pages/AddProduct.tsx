@@ -26,7 +26,7 @@ import ProductCards from "../components/ProductCards";
 import ProductForm from "../components/ProductForm";
 import { ERRORS } from "../data/enum";
 import { Product } from "../data/interfaces";
-import { TestProds } from "../data/tmp";
+import { getProductsBy } from "../utils/Database";
 import { getProductWithBarcode } from "../utils/WebService";
 
 // ------------------------------------------------------------------
@@ -36,6 +36,11 @@ interface Props {
   accessToken: string;
   onComplete: () => Promise<void> | void;
   onCancel: () => Promise<void> | void;
+}
+
+interface WebServiceRes {
+  sessionId: string | null;
+  hints: Product[];
 }
 
 /**
@@ -58,6 +63,12 @@ const AddProdctView: React.FC<Props> = (props) => {
   // Helper function to present alert dialog to the user
   const [showAlert] = useIonAlert();
 
+  // Initial value of wsRes state
+  const initialValue = {
+    sessionId: null,
+    hints: [],
+  };
+
   // -----------------------------------------------------------------
   // S t a t e
   // -----------------------------------------------------------------
@@ -66,8 +77,9 @@ const AddProdctView: React.FC<Props> = (props) => {
 
   // "Buffer" containing the local prouct hints (the product with the same barcode in the Database)
   const [localHints, setLocalHints] = useState<Product[]>([]);
-  // "Buffer" containing the WebService prouct hints
-  const [webServiceHints, setWebServiceHints] = useState<Product[]>([]);
+  // "Buffer" containing the WebService prouct hints and the session_id
+  // (to be used for statistical pourposes if a new product will be added by hand by the user)
+  const [wsRes, setWsRes] = useState<WebServiceRes>(initialValue);
 
   // -----------------------------------------------------------------
   // W o r k i n g   m e t h o d s
@@ -121,19 +133,17 @@ const AddProdctView: React.FC<Props> = (props) => {
    * @param  {string | undefined | null} barcode - The barcode
    */
   const updateProductHint = async (barcode?: string | null) => {
+    // Simple check on the input
     if (!barcode) {
-      setWebServiceHints([]);
+      setWsRes(initialValue);
       setLocalHints([]);
       return;
     }
 
     // Search in the local DB for a match
-    // TODO IMPLEMENT
-    setLocalHints(TestProds);
-
+    setLocalHints((await getProductsBy("barcode", barcode)) ?? []);
     // If no match is found then ask the WebService
-    const res = await getProductWithBarcode(accessToken, barcode);
-    setWebServiceHints(res.products);
+    setWsRes(await getProductWithBarcode(accessToken, barcode));
   };
 
   /**
@@ -207,7 +217,7 @@ const AddProdctView: React.FC<Props> = (props) => {
 
             <IonListHeader>Product shared by other users:</IonListHeader>
             <ProductCards
-              products={webServiceHints}
+              products={wsRes.hints}
               onCardSelected={console.log}
             />
           </>

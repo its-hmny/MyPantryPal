@@ -8,13 +8,18 @@ import {
   IonListHeader,
   IonPage,
   useIonActionSheet,
+  useIonAlert,
+  useIonViewWillEnter,
 } from "@ionic/react";
 import { addCircle } from "ionicons/icons";
+import { useState } from "react";
 import ProductCards from "../components/ProductCards";
 import UserGroceryList from "../components/UserGroceryList";
+import { USER_PANTRY_ID } from "../data/database";
 import { GroceryList, Product } from "../data/interfaces";
 import { TestGroceriesList, TestProds } from "../data/tmp";
 import { useAuth } from "../providers/AuthProvider";
+import { getGroceryList } from "../utils/Database";
 
 /**
  * Component that shows to the user a Dashboard with some recap info
@@ -33,10 +38,14 @@ const DashboardView: React.FC = () => {
   const { user } = useAuth();
   // Helper function to present an Action Sheet to the user
   const [presentAction] = useIonActionSheet();
+  // Helper function to present lert dialog to the user
+  const [showAlert] = useIonAlert();
 
   // -----------------------------------------------------------------
   // S t a t e
   // -----------------------------------------------------------------
+  // "Buffer" in which the low quantity product are saved
+  const [lowProduct, setLowProduct] = useState<Product[]>([]);
 
   // -----------------------------------------------------------------
   // W o r k i n g   m e t h o d s
@@ -75,12 +84,19 @@ const DashboardView: React.FC = () => {
    */
   const addProduct2GroceryList = async (list: GroceryList, prod: Product) => {
     // TODO IMPLEMENT
-    console.log("BP__", list, prod);
   };
 
   // -----------------------------------------------------------------
   // u s e E f f e c t
   // -----------------------------------------------------------------
+  // onViewMount it will fetch all the "running low" products
+  useIonViewWillEnter(async () => {
+    try {
+      setLowProduct(await getGroceryList(USER_PANTRY_ID));
+    } catch (err) {
+      showAlert(err.message);
+    }
+  }, []);
 
   // -----------------------------------------------------------------
   // T e m p l a t e
@@ -98,7 +114,7 @@ const DashboardView: React.FC = () => {
         {/* Products that are running out list */}
         <IonListHeader>You're running out of:</IonListHeader>
         <ProductCards
-          products={TestProds}
+          products={lowProduct}
           actions={[{ icon: addCircle, callback: addToGroceryLists }]}
         />
 
