@@ -16,7 +16,7 @@ import {
   useIonViewWillEnter,
 } from "@ionic/react";
 import { checkmark, trash } from "ionicons/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { USER_PANTRY_ID } from "../data/dbConfig";
 import { ROUTES } from "../data/enum";
@@ -29,6 +29,14 @@ import {
 } from "../utils/Database";
 import AlertMessage from "./AlertMessage";
 
+// ------------------------------------------------------------------
+// I n t e r f a c e s
+// ------------------------------------------------------------------
+interface Props {
+  withSubtitle?: boolean;
+  parentList?: GroceryList[];
+}
+
 /**
  * This fragment handles the rendering of the Grocery List created by
  * the user, the list item are "slidable" and every interaction with
@@ -38,10 +46,11 @@ import AlertMessage from "./AlertMessage";
  * @category Components
  * @subcategory Fragment
  */
-const UserGroceryLists: React.FC = () => {
+const UserGroceryLists: React.FC<Props> = (props) => {
   // -----------------------------------------------------------------
   // L o c a l   v a r s
   // -----------------------------------------------------------------
+  const { withSubtitle = false, parentList = null } = props;
   // Access the history stack of the browser/phone
   const history = useHistory();
   // Helper function to present lert dialog to the user
@@ -50,7 +59,10 @@ const UserGroceryLists: React.FC = () => {
   // -----------------------------------------------------------------
   // S t a t e
   // -----------------------------------------------------------------
-  const [groceryList, setGroceryLists] = useState<GroceryList[] | null>(null);
+  // Local buffer in which save the groceries list
+  const [groceryList, setGroceryLists] = useState<GroceryList[] | null>(
+    parentList
+  );
 
   // -----------------------------------------------------------------
   // W o r k i n g   m e t h o d s
@@ -119,11 +131,15 @@ const UserGroceryLists: React.FC = () => {
   // onViewMount it will fetch all the Grocery List avaiable
   useIonViewWillEnter(async () => {
     try {
-      setGroceryLists((await getGroceryLists()) ?? null);
+      if (groceryList === null)
+        setGroceryLists((await getGroceryLists()) ?? null);
     } catch (err) {
       showAlert(err.message);
     }
-  }, []);
+  });
+
+  // Whenever the given list changes in the parent the state is updated
+  useEffect(() => setGroceryLists(parentList), [parentList]);
 
   // -----------------------------------------------------------------
   // T e m p l a t e
@@ -149,7 +165,9 @@ const UserGroceryLists: React.FC = () => {
               <IonLabel>
                 <h1>{list.name}</h1>
                 <IonText color="primary">
-                  <h5>{`Contains ${list.products.length} products`}</h5>
+                  {withSubtitle ? (
+                    <h5>{`Contains ${list.products.length} products`}</h5>
+                  ) : null}
                 </IonText>
               </IonLabel>
             </IonItem>

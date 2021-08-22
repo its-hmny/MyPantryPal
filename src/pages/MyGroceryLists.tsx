@@ -13,11 +13,13 @@ import {
   IonToolbar,
   useIonAlert,
   useIonLoading,
+  useIonViewWillEnter,
 } from "@ionic/react";
 import { add } from "ionicons/icons";
+import { useState } from "react";
 import UserGroceryLists from "../components/UserGroceryList";
 import { GroceryList } from "../data/interfaces";
-import { insertGroceryList } from "../utils/Database";
+import { getGroceryLists, insertGroceryList } from "../utils/Database";
 
 /**
  * View that show to the user all the Groceries List avaible/created
@@ -40,6 +42,8 @@ const MyGroceryListsView: React.FC = () => {
   // -----------------------------------------------------------------
   // S t a t e
   // -----------------------------------------------------------------
+  // Local copy of the Grocery Lists created by the user
+  const [groceryLists, setGroceryLists] = useState<GroceryList[] | undefined>();
 
   // -----------------------------------------------------------------
   // W o r k i n g   m e t h o d s
@@ -69,6 +73,7 @@ const MyGroceryListsView: React.FC = () => {
     showLoading("Adding your new list...");
     try {
       await insertGroceryList(newList);
+      setGroceryLists(await getGroceryLists());
     } catch (err) {
       presentAlert(err.message);
     } finally {
@@ -79,6 +84,13 @@ const MyGroceryListsView: React.FC = () => {
   // -----------------------------------------------------------------
   // u s e E f f e c t
   // -----------------------------------------------------------------
+  useIonViewWillEnter(async () => {
+    try {
+      setGroceryLists(await getGroceryLists());
+    } catch (err) {
+      presentAlert(err.message);
+    }
+  });
 
   // -----------------------------------------------------------------
   // T e m p l a t e
@@ -97,7 +109,7 @@ const MyGroceryListsView: React.FC = () => {
       </IonHeader>
 
       <IonContent>
-        <UserGroceryLists />
+        <UserGroceryLists withSubtitle parentList={groceryLists} />
       </IonContent>
 
       <IonFooter>

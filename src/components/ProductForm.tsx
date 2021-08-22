@@ -34,6 +34,7 @@ interface Props {
   // Initial and optional product data to be used by the form (for update)
   product?: Product;
   onSave: (product: Product) => void | Promise<void>;
+  onDiscard: () => void | Promise<void>;
 }
 
 /**
@@ -45,7 +46,7 @@ interface Props {
  * @category Components
  * @subcategory Fragment
  */
-const ProductForm: React.FC<Props> = ({ product, onSave }) => {
+const ProductForm: React.FC<Props> = ({ product, onSave, onDiscard }) => {
   // -----------------------------------------------------------------
   // L o c a l   v a r s
   // -----------------------------------------------------------------
@@ -142,9 +143,8 @@ const ProductForm: React.FC<Props> = ({ product, onSave }) => {
     // Creates and renders the loading dialog/modal
     showLoading("Loading...");
     try {
-      // TODO ADD VALIDATIONs
-      if (true) {
-        // TODO save the product on the Database
+      const { name, description, barcode } = formData;
+      if (!!name && !!barcode && !!description) {
         await onSave(formData);
       } else throw Error(ERRORS.REQURED_DATA);
     } catch (err) {
@@ -215,16 +215,6 @@ const ProductForm: React.FC<Props> = ({ product, onSave }) => {
                 onIonChange={handleChange}
               />
             </IonItem>
-            <IonItem>
-              <IonLabel>Quantity:</IonLabel>
-              <IonInput
-                name="quantity"
-                type="number"
-                inputMode="numeric"
-                value={formData.quantity}
-                onIonChange={handleChange}
-              />
-            </IonItem>
           </IonList>
         </IonCardContent>
       </IonCard>
@@ -238,10 +228,10 @@ const ProductForm: React.FC<Props> = ({ product, onSave }) => {
 
       <IonFooter>
         <IonRow className="ion-justify-content-evenly">
-          <IonButton color="danger" onClick={undefined}>
+          <IonButton color="danger" onClick={onDiscard}>
             <IonIcon icon={close} /> Cancel
           </IonButton>
-          <IonButton onClick={undefined}>
+          <IonButton onClick={onSubmit}>
             <IonIcon icon={save} /> Save
           </IonButton>
         </IonRow>
