@@ -24,9 +24,14 @@ import { qrCode } from "ionicons/icons";
 import { useEffect, useState } from "react";
 import ProductCards from "../components/ProductCards";
 import ProductForm from "../components/ProductForm";
+import { USER_PANTRY_ID } from "../data/dbConfig";
 import { ERRORS } from "../data/enum";
 import { Product } from "../data/interfaces";
-import { getProductsBy } from "../utils/Database";
+import {
+  changeQuantitytyInList,
+  getProductsBy,
+  insertProduct,
+} from "../utils/Database";
 import { getProductsWithBarcode } from "../utils/WebService";
 
 // ------------------------------------------------------------------
@@ -154,10 +159,21 @@ const AddProdctView: React.FC<Props> = (props) => {
    * can now evolve indipendently from is "origin"
    * @function
    * @async
+   *
+   * @param {Product} product - The selected product
+   * @param {"create"|"import" | undefined} mode - The import mode
    */
-  const onHintSelected = async () => {
-    // TODO IMPLEMENT
-    console.log("BP__ onHintSelected");
+  const onHintSelected = async (prod: Product, mode?: "create" | "import") => {
+    try {
+      // If we're importing a product from the shared DB creates
+      // a local copy on local Database
+      if (mode === "import") await insertProduct(prod);
+
+      // Then adds the product to the user pantry
+      await changeQuantitytyInList(USER_PANTRY_ID, prod.id, prod.quantity ?? 1);
+    } catch (err) {
+      showAlert(err.message);
+    }
   };
 
   // -----------------------------------------------------------------
@@ -215,14 +231,26 @@ const AddProdctView: React.FC<Props> = (props) => {
             </IonList>
 
             <IonListHeader>Your products:</IonListHeader>
-            <ProductCards products={localHints} onCardSelected={alert} />
+            <ProductCards
+              products={localHints}
+              onCardSelected={(p) => onHintSelected(p)}
+            />
 
             <IonListHeader>Product shared by other users:</IonListHeader>
-            <ProductCards products={wsRes.hints} onCardSelected={console.log} />
+            <ProductCards
+              products={wsRes.hints}
+              onCardSelected={(p) => onHintSelected(p, "import")}
+            />
           </>
         )}
 
-        {activeTab === "create" && <ProductForm onSave={console.log} />}
+        {activeTab === "create" && (
+          <ProductForm
+            onSave={(p) => {
+              "TODO";
+            }}
+          />
+        )}
       </IonContent>
     </IonPage>
   );

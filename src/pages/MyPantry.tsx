@@ -11,7 +11,10 @@ import {
   IonSearchbar,
   IonTitle,
   IonToolbar,
+  useIonAlert,
   useIonModal,
+  useIonViewWillEnter,
+  useIonViewWillLeave,
 } from "@ionic/react";
 import {
   add,
@@ -22,9 +25,10 @@ import {
 import { useEffect, useState } from "react";
 import ProductCards from "../components/ProductCards";
 import { USER_PANTRY_ID } from "../data/dbConfig";
+import { ERRORS } from "../data/enum";
 import { Product } from "../data/interfaces";
 import { useAuth } from "../providers/AuthProvider";
-import { getGroceryList } from "../utils/Database";
+import { changeQuantitytyInList, getGroceryList } from "../utils/Database";
 import AddProdctView from "./AddProduct";
 
 /**
@@ -52,6 +56,9 @@ const MyPantryView: React.FC = () => {
     onCancel: closeModal,
   });
 
+  // Helper function to present an alert dialog to the user
+  const [showAlert] = useIonAlert();
+
   // -----------------------------------------------------------------
   // S t a t e
   // -----------------------------------------------------------------
@@ -70,23 +77,26 @@ const MyPantryView: React.FC = () => {
    * @async
    */
   const filterPantry = async () => {
-    // Get the pantry details
-    const pantry = await getGroceryList(USER_PANTRY_ID);
-    // Does some error checking
-    if (pantry === undefined) return;
-    // Extrapolates the full product list from the Pantry details
-    const { products: fullList } = pantry;
+    try {
+      // Get the pantry details
+      const pantry = await getGroceryList(USER_PANTRY_ID);
+      // Does some error checking
+      if (pantry === undefined) throw Error(ERRORS.PANTRY_NOT_FOUND);
+      // Extrapolates the full product list from the Pantry details
+      const { products: fullList } = pantry;
 
-    // If seacrh string is not defined or empty
-    if (!searchStr) {
-      // Fetches all the products in the pantry
-      window.alert(fullList);
-      //setPantryProds(fullList);
-      return;
+      // If seacrh string is not defined or empty
+      if (!searchStr) {
+        // Fetches all the products in the pantry
+        setPantryProds(fullList);
+        return;
+      }
+
+      // Filters the full list by name and sets the state
+      setPantryProds(fullList.filter((prod) => prod.name.includes(searchStr)));
+    } catch (err) {
+      showAlert(err.message);
     }
-
-    // Filters the full list by name and sets the state
-    setPantryProds(fullList.filter((prod) => prod.name.includes(searchStr)));
   };
 
   /**
@@ -113,13 +123,18 @@ const MyPantryView: React.FC = () => {
    * @param {number} diff - The increment/decrement of the quantity
    */
   const addQuantity = async (prod: Product, diff: number) => {
-    // TODO IMPLEMENT
-    console.log("BP__ onAddQuantity", prod, diff);
+    try {
+      await changeQuantitytyInList(USER_PANTRY_ID, prod.id, diff);
+    } catch (err) {
+      showAlert(err.message);
+    }
   };
 
   // -----------------------------------------------------------------
   // u s e E f f e c t
   // -----------------------------------------------------------------
+  // Fetches the product onViewMount
+  useIonViewWillEnter(async () => await filterPantry());
   // Whenever the filters changes, re-executes the query with new params
   useEffect(() => {
     filterPantry();

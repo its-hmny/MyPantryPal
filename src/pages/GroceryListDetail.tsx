@@ -17,7 +17,7 @@ import { useHistory, useParams } from "react-router";
 import ProductCards from "../components/ProductCards";
 import { ERRORS, ROUTES } from "../data/enum";
 import { GroceryList, Product } from "../data/interfaces";
-import { addToList, getGroceryList } from "../utils/Database";
+import { changeQuantitytyInList, getGroceryList } from "../utils/Database";
 
 /**
  * This view shows the user all the detals about a Grocery List identified
@@ -79,7 +79,7 @@ const GroceryListDeatilsView: React.FC = () => {
    */
   const addQuantity = async (prod: Product, diff: number) => {
     try {
-      await addToList(listId, prod.id, diff);
+      await changeQuantitytyInList(listId, prod.id, diff);
     } catch (err) {
       showAlert(err.message);
     }

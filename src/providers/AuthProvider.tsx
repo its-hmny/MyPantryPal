@@ -1,7 +1,11 @@
 // ------------------------------------------------------------------
 // I m p o r t s
 // ------------------------------------------------------------------
-import { useIonAlert, IonLoading, useIonLoading } from "@ionic/react";
+import {
+  useIonAlert,
+  useIonLoading,
+  useIonViewWillLeave,
+} from "@ionic/react";
 import moment from "moment";
 import { useState, useEffect, useContext, createContext } from "react";
 import { useHistory } from "react-router";
@@ -195,11 +199,10 @@ export const AuthProvider: React.FC = ({ children }) => {
   // onMount retrieve and check the data about the previous authUser
   useEffect(() => {
     initAuthProvider();
-    // onUnmount closes the database
-    return () => {
-      database?.close();
-    };
   }, []);
+
+  // onUnmount closes the database
+  useIonViewWillLeave(async () => await database?.close());
 
   //window.alert(JSON.stringify(userData));
   // -----------------------------------------------------------------

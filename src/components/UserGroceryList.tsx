@@ -22,7 +22,7 @@ import { USER_PANTRY_ID } from "../data/dbConfig";
 import { ROUTES } from "../data/enum";
 import { GroceryList } from "../data/interfaces";
 import {
-  addToList,
+  changeQuantitytyInList,
   deleteGroceryList,
   getGroceryLists,
   truncateGroceryList,
@@ -82,7 +82,7 @@ const UserGroceryLists: React.FC = () => {
       await Promise.all(
         // Add the products to the Pantry
         products.map((prod) =>
-          addToList(USER_PANTRY_ID, prod.id, prod.quantity ?? 0)
+          changeQuantitytyInList(USER_PANTRY_ID, prod.id, prod.quantity ?? 1)
         )
       );
       // Truncate the Grocery List to evaded

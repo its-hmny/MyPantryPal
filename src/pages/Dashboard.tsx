@@ -9,7 +9,7 @@ import {
   IonPage,
   useIonActionSheet,
   useIonAlert,
-  useIonViewWillEnter,
+  useIonViewDidEnter,
 } from "@ionic/react";
 import { addCircle } from "ionicons/icons";
 import { useState } from "react";
@@ -20,7 +20,11 @@ import { USER_PANTRY_ID } from "../data/dbConfig";
 import { ERRORS } from "../data/enum";
 import { GroceryList, Product } from "../data/interfaces";
 import { useAuth } from "../providers/AuthProvider";
-import { addToList, getGroceryList, getGroceryLists } from "../utils/Database";
+import {
+  changeQuantitytyInList,
+  getGroceryList,
+  getGroceryLists,
+} from "../utils/Database";
 
 /**
  * Component that shows to the user a Dashboard with some recap info
@@ -87,7 +91,7 @@ const DashboardView: React.FC = () => {
    */
   const addProductToGroceryList = async (list: GroceryList, prod: Product) => {
     try {
-      await addToList(list.id, prod.id, 1);
+      await changeQuantitytyInList(list.id, prod.id, 1);
     } catch (err) {
       showAlert(err.message);
     }
@@ -97,11 +101,16 @@ const DashboardView: React.FC = () => {
   // u s e E f f e c t
   // -----------------------------------------------------------------
   // onViewMount it will fetch all the "running low" products
-  useIonViewWillEnter(async () => {
+  useIonViewDidEnter(async () => {
     try {
       const userPantry = await getGroceryList(USER_PANTRY_ID);
       if (userPantry === undefined) return;
-      setLowProduct(userPantry.products);
+      // Sorts the products by quantity
+      const sorted = userPantry.products.sort(
+        (a, b) => (a.quantity ?? 0) - (b.quantity ?? 0)
+      );
+      const userHint = sorted.length > 4 ? sorted.slice(0, 4) : sorted;
+      setLowProduct(userHint);
     } catch (err) {
       showAlert(err.message);
     }
