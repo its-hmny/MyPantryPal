@@ -46,11 +46,10 @@ export const initDatabase = async () => {
  * TODO COMMENT
  * @function
  * @async
- *
- * @param {number?} limit - The max number of result we want (optional)
+ * 
  * @return {Promise<GroceryList[] | undefined>}
  */
-export const getGroceryLists = async (limit?: number) => {
+export const getGroceryLists = async () => {
   // Checks that the DB is open and working properly
   if (!database?.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
 
@@ -59,7 +58,6 @@ export const getGroceryLists = async (limit?: number) => {
     await database.query(`
       SELECT * FROM ${DB_TABLES.GROCERY_LIST}
       WHERE id != "${USER_PANTRY_ID}";
-      LIMIT ${limit ?? 100}
   `)
   ).values;
 
@@ -76,7 +74,7 @@ export const getGroceryLists = async (limit?: number) => {
         `)
       ).values;
       // Then returns a comprehemsive payload interface compliant
-      return { ...list, products };
+      return { ...list, products } as GroceryList;
     })
   );
 };
