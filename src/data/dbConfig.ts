@@ -6,7 +6,7 @@ const DatabaseConfig = {
   database: "MyPantryPal",
   encrypted: false,
   version: 1,
-  mode: "full",
+  mode: "partial",
 
   tables: [
     {
@@ -17,6 +17,10 @@ const DatabaseConfig = {
         { column: "description", value: "TEXT NOT NULL" },
         { column: "barcode", value: "TEXT NOT NULL" },
         { column: "img", value: "TEXT" },
+        {
+          column: "last_modified",
+          value: "INTEGER DEFAULT (strftime('%s', 'now'))",
+        },
       ],
       values: [],
     },
@@ -28,19 +32,24 @@ const DatabaseConfig = {
         { column: "name", value: "TEXT NOT NULL" },
       ],
       values: [
-        [USER_PANTRY_ID, "My Pantry"],
-        ["1", "Macellaio"],
-        ["2", "Fruttivendolo"],
-        ["3", "Lista Conad"]
+       // [USER_PANTRY_ID, "My Pantry"],
+       // ["1", "Macellaio"],
+       // ["2", "Fruttivendolo"],
+       // ["3", "Lista Conad"],
       ],
     },
 
     {
       name: DB_TABLES.QUANTITIES,
       schema: [
+        { column: "id", value: "INTEGER UNIQUE PRIMARY KEY NOT NULL" },
         { column: "listId", value: "TEXT NOT NULL" },
         { column: "productId", value: "TEXT NOT NULL" },
         { column: "quantity", value: "INTEGER NOT NULL" },
+        {
+          column: "last_modified",
+          value: "INTEGER DEFAULT (strftime('%s', 'now'))",
+        },
 
         // TODO THIS IS NOT WORKING
         //{

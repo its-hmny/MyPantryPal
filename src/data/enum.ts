@@ -58,6 +58,7 @@ export enum ERRORS {
   SIGNUP_ERROR = "There was an error and we couldn't complete registration process. Please try again later",
   DATABASE_ERROR = "There was an error ith the Database setup",
   PERMISSION_ERROR = "Please grant permission requested in order to use this functionality",
+  PANTRY_NOT_FOUND = "Oops, couldn't find your pantry, please try again later",
   LIST_NOT_FOUND = "Oops, couldn't find the Grocery List you're looking for!",
 }
 

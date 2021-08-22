@@ -19,6 +19,10 @@ export let database: SQLiteDBConnection;
  * @async
  */
 export const initDatabase = async () => {
+  // When in develpment mode doesn't open the DB always
+  const status = await database?.isDBOpen();
+  if (!!status && status.result) return;
+
   // Create & setup a connection object
   const SQLite = new SQLiteConnection(CapacitorSQLite);
   const db = await SQLite.createConnection(
@@ -43,17 +47,19 @@ export const initDatabase = async () => {
  * @function
  * @async
  *
+ * @param {number?} limit - The max number of result we want (optional)
  * @return {Promise<GroceryList[] | undefined>}
  */
-export const getGroceryLists = async () => {
+export const getGroceryLists = async (limit?: number) => {
   // Checks that the DB is open and working properly
-  if (!database.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
+  if (!database?.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
 
   // Get a list of all the grocery list avaiaible
   const lists = (
     await database.query(`
-    SELECT * FROM ${DB_TABLES.GROCERY_LIST}
-    WHERE id != ${USER_PANTRY_ID};
+      SELECT * FROM ${DB_TABLES.GROCERY_LIST}
+      WHERE id != "${USER_PANTRY_ID}";
+      LIMIT ${limit ?? 100}
   `)
   ).values;
 
@@ -64,10 +70,10 @@ export const getGroceryLists = async () => {
     lists.map(async (list) => {
       const products = (
         await database.query(`
-      SELECT * 
-      FROM ${DB_TABLES.QUANTITIES} q, ${DB_TABLES.PRODUCTS} p 
-      WHERE q.listId == ${list.id} AND q.productId == p.id;
-    `)
+          SELECT * 
+          FROM ${DB_TABLES.QUANTITIES} q, ${DB_TABLES.PRODUCTS} p 
+          WHERE q.listId == "${list.id}" AND q.productId == p.id;
+        `)
       ).values;
       // Then returns a comprehemsive payload interface compliant
       return { ...list, products };
@@ -84,12 +90,12 @@ export const getGroceryLists = async () => {
  */
 export const getGroceryList = async (listId: string) => {
   // Checks that the DB is open and working properly
-  if (!database.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
+  if (!database?.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
 
   // Get a list of all the grocery list avaiaible
   const res = await database.query(`
     SELECT * FROM ${DB_TABLES.GROCERY_LIST}
-    WHERE id == ${listId};
+    WHERE id == "${listId}";
   `);
 
   if (!res.values || !res.values[0]) return undefined;
@@ -101,7 +107,7 @@ export const getGroceryList = async (listId: string) => {
       await database.query(`
       SELECT * 
       FROM ${DB_TABLES.QUANTITIES} q, ${DB_TABLES.PRODUCTS} p 
-      WHERE q.listId == ${listId} AND q.productId == p.id;
+      WHERE q.listId == "${listId}" AND q.productId == p.id;
     `)
     ).values || [];
 
@@ -118,7 +124,7 @@ export const getGroceryList = async (listId: string) => {
  */
 export const insertGroceryList = async (list: Partial<GroceryList>) => {
   // Checks that the DB is open and working properly
-  if (!database.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
+  if (!database?.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
   // Destructures the list object
   const { name } = list;
   // Generate a uuid for the new list
@@ -141,7 +147,7 @@ export const insertGroceryList = async (list: Partial<GroceryList>) => {
  */
 export const truncateGroceryList = async (listId: string) => {
   // Checks that the DB is open and working properly
-  if (!database.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
+  if (!database?.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
 
   // Removes all the entry with the same litId from the Quantities table
   await database.query(`
@@ -160,14 +166,14 @@ export const truncateGroceryList = async (listId: string) => {
  */
 export const deleteGroceryList = async (listId: string) => {
   // Checks that the DB is open and working properly
-  if (!database.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
+  if (!database?.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
 
   // Empties at first the grocery list
   await truncateGroceryList(listId);
   // Then removes it from its SQL Table
   await database.query(`
-  DELETE FROM ${DB_TABLES.GROCERY_LIST}
-  WHERE id == ${listId} AND id != 0;
+    DELETE FROM ${DB_TABLES.GROCERY_LIST}
+    WHERE id == ${listId} AND id != 0;
 `);
 };
 
@@ -181,20 +187,19 @@ export const deleteGroceryList = async (listId: string) => {
  *
  * @return {Promise<void>}
  */
-export const insertProduct = async (list: Product) => {
+export const insertProduct = async (prod: Product) => {
   // Checks that the DB is open and working properly
-  if (!database.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
+  if (!database?.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
   // Destructures the list object
-  const { id, name, description, barcode, img } = list;
+  const { id, name, description, barcode, img } = prod;
   // Executes the query
-  const res = await database.query(`
-    INSERT INTO ${DB_TABLES.PRODUCTS} id, name, description, barcode, img
+  await database.query(`
+    INSERT INTO ${DB_TABLES.PRODUCTS} (id, name, description, barcode, img)
     VALUES(
-      "${id}", "${name}", "${description}", "${barcode}", "${img ?? "NULL"}"
+      "${id}", "${name}", "${description}", 
+      "${barcode}", ${img ? `"${img}"` : "NULL"}
     );
   `);
-  // TODO CHECK
-  return res.values;
 };
 
 /**
@@ -207,7 +212,7 @@ export const insertProduct = async (list: Product) => {
  */
 export const getProduct = async (productId: string) => {
   // Checks that the DB is open and working properly
-  if (!database.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
+  if (!database?.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
   // Executes the query
   const res = await database.query(`
     SELECT * FROM ${DB_TABLES.PRODUCTS}
@@ -226,7 +231,7 @@ export const getProduct = async (productId: string) => {
  */
 export const getProductsBy = async (key: "name" | "barcode", value: string) => {
   // Checks that the DB is open and working properly
-  if (!database.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
+  if (!database?.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
   // Executes the query
   const res = await database.query(`
     SELECT * FROM ${DB_TABLES.PRODUCTS}
@@ -243,16 +248,17 @@ export const getProductsBy = async (key: "name" | "barcode", value: string) => {
  *
  * @return {Promise<void>}
  */
-export const updateProduct = async (list: Partial<Product>) => {
+export const updateProduct = async (prod: Partial<Product>) => {
   // Checks that the DB is open and working properly
-  if (!database.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
+  if (!database?.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
   // Destructures the list object
-  const { id, name } = list;
+  const { id, name, description, barcode, img } = prod;
   if (!!id) {
     // Executes the query
     const res = await database.query(`
       UPDATE ${DB_TABLES.GROCERY_LIST}
-      SET name="${name}"
+      SET name="${name}", barcode="${barcode}", img="${img}" 
+      description="${description}"
       WHERE id != ${id};
     `);
     return res.values;
@@ -268,42 +274,40 @@ export const updateProduct = async (list: Partial<Product>) => {
  * @async
  *
  * @param {string} listId -
- * @param {string} prodId -
- */
-export const addToList = async (
-  listId: string,
-  prodId: string,
-  qty: number
-) => {};
-
-/**
- * TODO COMMENT
- * @function
- * @async
- *
- * @param {string} listId -
  * @param {string} productId -
  */
-const removeFromList = async (listId: string, productId: string) => {};
+export const changeQuantitytyInList = async (
+  listId: string,
+  productId: string,
+  diff: number
+) => {
+  // Const get the previous data (if existent)
+  const [previous] =
+    (
+      await database.query(`
+        SELECT *
+        FROM ${DB_TABLES.QUANTITIES}
+        WHERE listId = "${listId}" AND productId = "${productId}" 
+      `)
+    ).values ?? [];
 
-/**
- * TODO COMMENT
- * @function
- * @async
- *
- * @param {string} listId -
- */
-const evadeList = async (listId: string) => {
-  // Get all the products registered to the given list
-  const listProducts = (
+  // If a previous record is defined then update that
+  if (!!previous) {
     await database.query(`
-      SELECT * 
-      FROM ${DB_TABLES.QUANTITIES} q, ${DB_TABLES.PRODUCTS} p 
-      WHERE q.listId == ${listId} AND q.productId == p.id;
-    `)
-  ).values;
-
-  if (!listProducts?.length) return;
-
-  await Promise.all(listProducts.map((prod) => {}));
+      UPDATE ${DB_TABLES.QUANTITIES}
+      SET quantity = ${
+        previous.quantity + diff
+      }, last_modified = (strftime('%s', 'now'))
+      WHERE listId == "${listId}" AND productId == "${productId}";
+    `);
+  } else {
+    // Generate a uuid for the new list
+    const buffer = new Uint32Array(1);
+    window.crypto.getRandomValues(buffer);
+    // Else create it from scratch
+    await database.query(`
+      INSERT INTO ${DB_TABLES.QUANTITIES} (id, listId, productId, quantity)
+      VALUES("${buffer[0]}", "${listId}", "${productId}", ${diff});
+    `);
+  }
 };
