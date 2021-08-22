@@ -104,13 +104,13 @@ const DashboardView: React.FC = () => {
   useIonViewDidEnter(async () => {
     try {
       const userPantry = await getGroceryList(USER_PANTRY_ID);
-      if (userPantry === undefined) return;
+      if (userPantry === undefined) throw Error(ERRORS.PANTRY_NOT_FOUND);
       // Sorts the products by quantity
       const sorted = userPantry.products.sort(
         (a, b) => (a.quantity ?? 0) - (b.quantity ?? 0)
       );
-      const userHint = sorted.length > 4 ? sorted.slice(0, 4) : sorted;
-      setLowProduct(userHint);
+      const final = sorted.length > 4 ? sorted.slice(0, 4) : sorted;
+      setLowProduct(final);
     } catch (err) {
       showAlert(err.message);
     }

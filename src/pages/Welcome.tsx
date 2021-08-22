@@ -4,7 +4,8 @@
 import { IonContent, IonPage, setupConfig, useIonAlert } from "@ionic/react";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
-import { getGroceryLists, initDatabase } from "../utils/Database";
+import { DB_TABLES } from "../data/enum";
+import { database, getGroceryLists, initDatabase } from "../utils/Database";
 
 /**
  * Component that shows to the user a simple text with debugging
@@ -32,8 +33,16 @@ const WelcomeView: React.FC = () => {
   // -----------------------------------------------------------------
   const setup = async () => {
     try {
-      const res = await getGroceryLists();
-      setTmp(JSON.stringify(res, undefined, 2));
+      const gl = await getGroceryLists();
+      const prods = await database.query(`SELECT * FROM ${DB_TABLES.PRODUCTS}`);
+      const qty = await database.query(`SELECT * FROM ${DB_TABLES.QUANTITIES}`);
+      setTmp(`
+${JSON.stringify(gl, undefined, 2)}
+
+${JSON.stringify(prods.values, undefined, 2)}
+
+${JSON.stringify(qty.values, undefined, 2)}
+      `);
     } catch (err) {
       showAlert(err.message);
     }
@@ -44,7 +53,7 @@ const WelcomeView: React.FC = () => {
   // -----------------------------------------------------------------
   useEffect(() => {
     setup();
-  }, []);
+  });
 
   // -----------------------------------------------------------------
   // T e m p l a t e
@@ -53,7 +62,7 @@ const WelcomeView: React.FC = () => {
     <IonPage>
       <IonContent>
         <p>{`You're currently on the route ${history.location.pathname}`}</p>
-        <p>{tmp}</p>
+        <pre>{tmp}</pre>
       </IonContent>
     </IonPage>
   );

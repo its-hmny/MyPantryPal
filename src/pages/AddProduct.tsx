@@ -32,7 +32,11 @@ import {
   getProductsBy,
   insertProduct,
 } from "../utils/Database";
-import { getProductsWithBarcode } from "../utils/WebService";
+import {
+  getProductsWithBarcode,
+  shareNewProduct,
+  upvoteProduct,
+} from "../utils/WebService";
 
 // ------------------------------------------------------------------
 // I n t e r f a c e s
@@ -163,14 +167,30 @@ const AddProdctView: React.FC<Props> = (props) => {
    * @param {Product} product - The selected product
    * @param {"create"|"import" | undefined} mode - The import mode
    */
-  const onHintSelected = async (prod: Product, mode?: "create" | "import") => {
+  const onAddProduct = async (prod: Product, mode?: "create" | "import") => {
     try {
-      // If we're importing a product from the shared DB creates
-      // a local copy on local Database
-      if (mode === "import") await insertProduct(prod);
+      const sessionToken = wsRes.sessionId ?? "";
+
+      // Upvote the product to the WebService
+      if (mode === "import") {
+        // Upvotes the product in the shared daabase
+        await upvoteProduct(accessToken, sessionToken, prod.id);
+        // Creates a local copy on local Database
+        await insertProduct(prod);
+      }
+
+      // Adds the product to shared database in the WebService
+      if (mode === "create") {
+        // WebService generates a uuid for us
+        const { id } = await shareNewProduct(accessToken, sessionToken, prod);
+        // Creates a local copy on local Database
+        await insertProduct({ ...prod, id });
+      }
 
       // Then adds the product to the user pantry
       await changeQuantitytyInList(USER_PANTRY_ID, prod.id, prod.quantity ?? 1);
+      // Calls the parent callback
+      await onComplete();
     } catch (err) {
       showAlert(err.message);
     }
@@ -206,7 +226,7 @@ const AddProdctView: React.FC<Props> = (props) => {
             <IonSegmentButton value="import">
               <IonLabel>Import</IonLabel>
             </IonSegmentButton>
-            <IonSegmentButton value="create">
+            <IonSegmentButton disabled={!wsRes.sessionId} value="create">
               <IonLabel>Create</IonLabel>
             </IonSegmentButton>
           </IonSegment>
@@ -233,22 +253,21 @@ const AddProdctView: React.FC<Props> = (props) => {
             <IonListHeader>Your products:</IonListHeader>
             <ProductCards
               products={localHints}
-              onCardSelected={(p) => onHintSelected(p)}
+              onCardSelected={(p) => onAddProduct(p)}
             />
 
             <IonListHeader>Product shared by other users:</IonListHeader>
             <ProductCards
               products={wsRes.hints}
-              onCardSelected={(p) => onHintSelected(p, "import")}
+              onCardSelected={(p) => onAddProduct(p, "import")}
             />
           </>
         )}
 
         {activeTab === "create" && (
           <ProductForm
-            onSave={(p) => {
-              "TODO";
-            }}
+            onDiscard={onCancel}
+            onSave={(newProd) => onAddProduct(newProd, "create")}
           />
         )}
       </IonContent>
