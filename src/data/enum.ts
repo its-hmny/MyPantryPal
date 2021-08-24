@@ -17,6 +17,7 @@ export enum ROUTES {
   // PRIVATE ROUTES
   DASHBOARD = "/dashboard",
   MY_PANTRY = "/my-pantry",
+  PRODUCT_DETAILS = "/product/:id",
   GROCERIES_LIST = "/groceries-list",
   GROCERY_LIST_DETAILS = "/groceries-list/:id",
   PROFILE = "/profile",
@@ -38,6 +39,7 @@ export enum ROUTE_KEYS {
   // PRIVATE ROUTES
   DASHBOARD = "Dashboard",
   MY_PANTRY = "My Pantry",
+  PRODUCT_DETAILS = "Product",
   GROCERIES_LIST = "Grocery Lists",
   GROCERY_LIST_DETAILS = "Grocery List Details",
   PROFILE = "Profile",
@@ -60,6 +62,7 @@ export enum ERRORS {
   PERMISSION_ERROR = "Please grant permission requested in order to use this functionality",
   PANTRY_NOT_FOUND = "Oops, couldn't find your pantry, please try again later",
   LIST_NOT_FOUND = "Oops, couldn't find the Grocery List you're looking for!",
+  PRODUCT_NOT_FOUND = "Oops, couldn't find the Product you're looking for!",
 }
 
 /**

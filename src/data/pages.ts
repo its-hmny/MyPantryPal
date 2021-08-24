@@ -7,6 +7,7 @@ import DashboardView from "../pages/Dashboard";
 import GroceryListDeatilsView from "../pages/GroceryListDetail";
 import MyGroceryListsView from "../pages/MyGroceryLists";
 import MyPantryView from "../pages/MyPantry";
+import ProductDetailView from "../pages/ProductDetail";
 import SignInView from "../pages/SignIn";
 import SignUpView from "../pages/SignUp";
 import UserProfileView from "../pages/UserProfile";
@@ -45,8 +46,12 @@ const PAGES: { publicPages: Page[]; privatePages: Page[] } = {
       path: ROUTES.MY_PANTRY,
       key: ROUTE_KEYS.MY_PANTRY,
       component: MyPantryView,
-
       icon: fastFood,
+    },
+    {
+      path: ROUTES.PRODUCT_DETAILS,
+      key: ROUTE_KEYS.PRODUCT_DETAILS,
+      component: ProductDetailView,
     },
     {
       path: ROUTES.GROCERIES_LIST,

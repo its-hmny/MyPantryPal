@@ -22,9 +22,10 @@ import {
   removeCircle,
 } from "ionicons/icons";
 import { useEffect, useState } from "react";
+import { useHistory } from "react-router";
 import ProductCards from "../components/ProductCards";
 import { USER_PANTRY_ID } from "../data/dbConfig";
-import { ERRORS } from "../data/enum";
+import { ERRORS, ROUTES } from "../data/enum";
 import { Product } from "../data/interfaces";
 import { useAuth } from "../providers/AuthProvider";
 import { changeQuantitytyInList, getGroceryList } from "../utils/Database";
@@ -45,18 +46,20 @@ const MyPantryView: React.FC = () => {
   // -----------------------------------------------------------------
   // Retrieve user Access Token, in order to make requests
   const { accessToken } = useAuth();
+  // Access the history stack of the browser/phone
+  const history = useHistory();
+
+  // Helper function to present an alert dialog to the user
+  const [showAlert] = useIonAlert();
 
   // Only for scopes reasons
   const closeModal = () => dismissModal();
-  // Helper functions to open and dismiss a Modal view
+  // Helper functions to open and dismiss a "Add Product" Modal view
   const [presentModal, dismissModal] = useIonModal(AddProdctView, {
     accessToken,
     onComplete: closeModal,
     onCancel: closeModal,
   });
-
-  // Helper function to present an alert dialog to the user
-  const [showAlert] = useIonAlert();
 
   // -----------------------------------------------------------------
   // S t a t e
@@ -106,10 +109,8 @@ const MyPantryView: React.FC = () => {
    *
    * @param {Product} prod - The product selected by the user
    */
-  const go2ProductDetail = (prod: Product) => {
-    // TODO IMPLEMENT
-    console.log("BP__ onProductRedirect", prod);
-  };
+  const go2ProductDetail = (prod: Product) =>
+    history.push(ROUTES.PRODUCT_DETAILS.replace(":id", prod.id));
 
   /**
    * This functions handles the increment/decrement of the quantity of
