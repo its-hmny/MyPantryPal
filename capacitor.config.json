@@ -2,8 +2,5 @@
   "appId": "com.hmny.MyPantryPal",
   "appName": "My Pantry Pal",
   "webDir": "build",
-  "bundledWebRuntime": false,
-  "server": {
-    "url": "http://192.168.1.3:8100"
-  }
+  "bundledWebRuntime": false
 }

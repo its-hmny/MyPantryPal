@@ -46,7 +46,7 @@ export const initDatabase = async () => {
  * TODO COMMENT
  * @function
  * @async
- * 
+ *
  * @return {Promise<GroceryList[] | undefined>}
  */
 export const getGroceryLists = async () => {
@@ -216,7 +216,10 @@ export const getProduct = async (productId: string) => {
     SELECT * FROM ${DB_TABLES.PRODUCTS}
     WHERE id == "${productId}";
   `);
-  return res.values;
+
+  // Check return value by the query
+  if (!res.values || !res.values[0]) return undefined;
+  return res.values[0] as Product;
 };
 
 /**
