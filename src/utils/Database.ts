@@ -189,7 +189,15 @@ export const insertProduct = async (prod: Product) => {
   // Checks that the DB is open and working properly
   if (!database?.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
   // Destructures the list object
-  const { id, name, description, barcode, img } = prod;
+  let { id, name, description, barcode, img } = prod;
+
+  // If an id isn't provided then is generated
+  if (!id) {
+    const buffer = new Uint32Array(1);
+    window.crypto.getRandomValues(buffer);
+    id = buffer[0].toString();
+  }
+
   // Executes the query
   await database.query(`
     INSERT INTO ${DB_TABLES.PRODUCTS} (id, name, description, barcode, img)
@@ -257,10 +265,11 @@ export const updateProduct = async (prod: Partial<Product>) => {
   if (!!id) {
     // Executes the query
     const res = await database.query(`
-      UPDATE ${DB_TABLES.GROCERY_LIST}
-      SET name="${name}", barcode="${barcode}", img="${img}" 
-      description="${description}"
-      WHERE id != ${id};
+      UPDATE ${DB_TABLES.PRODUCTS}
+      SET name = "${name}", barcode = "${barcode}", 
+        img = ${img ? `"${img}"` : "NULL"}, description = "${description}",
+        last_modified = (strftime('%s', 'now'))
+      WHERE id == "${id}";
     `);
     return res.values;
   } else throw Error("Missing id for update operation");
@@ -296,9 +305,8 @@ export const changeQuantitytyInList = async (
   if (!!previous) {
     await database.query(`
       UPDATE ${DB_TABLES.QUANTITIES}
-      SET quantity = ${
-        previous.quantity + diff
-      }, last_modified = (strftime('%s', 'now'))
+      SET quantity = ${previous.quantity + diff},
+        last_modified = (strftime('%s', 'now'))
       WHERE listId == "${listId}" AND productId == "${productId}";
     `);
   } else {

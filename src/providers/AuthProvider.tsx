@@ -204,7 +204,6 @@ export const AuthProvider: React.FC = ({ children }) => {
   // onUnmount closes the database
   useIonViewWillLeave(async () => await database?.close());
 
-  //window.alert(JSON.stringify(userData));
   // -----------------------------------------------------------------
   // T e m p l a t e
   // -----------------------------------------------------------------

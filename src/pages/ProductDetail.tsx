@@ -7,7 +7,7 @@ import { useHistory, useParams } from "react-router";
 import ProductForm from "../components/ProductForm";
 import { ERRORS } from "../data/enum";
 import { Product } from "../data/interfaces";
-import { getProduct } from "../utils/Database";
+import { getProduct, updateProduct } from "../utils/Database";
 
 /**
  * TODO COMMENTS
@@ -54,6 +54,24 @@ const ProductDetailView: React.FC = () => {
     }
   };
 
+  /**
+   * This function handles the update of the Product and, upon completion,
+   * redirects then the user to the previous page. If an error occurs the user
+   * is showed an alert 
+   * @function
+   * @async
+   * 
+   * @param {Product} prod -  
+   */
+  const handleProductUpdate = async (prod: Product) => {
+    try {
+      await updateProduct(prod);
+      history.goBack();
+    } catch (err) {
+      showAlert(err.message);
+    }
+  };
+
   // -----------------------------------------------------------------
   // u s e E f f e c t
   // -----------------------------------------------------------------
@@ -70,7 +88,7 @@ const ProductDetailView: React.FC = () => {
       <IonContent>
         <ProductForm
           product={product}
-          onSave={(p) => window.alert(JSON.stringify(p))}
+          onSave={handleProductUpdate}
           onDiscard={history.goBack}
         />
       </IonContent>
