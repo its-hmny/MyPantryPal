@@ -181,10 +181,11 @@ const AddProdctView: React.FC<Props> = (props) => {
 
       // Adds the product to shared database in the WebService
       if (mode === "create") {
-        // WebService generates a uuid for us
-        const { id } = await shareNewProduct(accessToken, sessionToken, prod);
+        // WebService generates a uuid for us if the call is successfull
+        await shareNewProduct(accessToken, sessionToken, prod);
         // Creates a local copy on local Database
-        await insertProduct({ ...prod, id });
+        const newId = await insertProduct(prod);
+        prod.id = newId;
       }
 
       // Then adds the product to the user pantry

@@ -31,7 +31,7 @@ const DatabaseConfig = {
         { column: "id", value: "TEXT UNIQUE PRIMARY KEY NOT NULL" },
         { column: "name", value: "TEXT NOT NULL" },
       ],
-      values: [[USER_PANTRY_ID, "My Pantry"]],
+      values: [],
     },
 
     {

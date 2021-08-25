@@ -28,7 +28,11 @@ import { USER_PANTRY_ID } from "../data/dbConfig";
 import { ERRORS, ROUTES } from "../data/enum";
 import { Product } from "../data/interfaces";
 import { useAuth } from "../providers/AuthProvider";
-import { changeQuantitytyInList, getGroceryList } from "../utils/Database";
+import {
+  changeQuantitytyInList,
+  getGroceryList,
+  getPantryProduct,
+} from "../utils/Database";
 import AddProdctView from "./AddProduct";
 
 /**
@@ -81,21 +85,19 @@ const MyPantryView: React.FC = () => {
   const filterPantry = async () => {
     try {
       // Get the pantry details
-      const pantry = await getGroceryList(USER_PANTRY_ID);
+      const pantry = await getPantryProduct();
       // Does some error checking
       if (pantry === undefined) throw Error(ERRORS.PANTRY_NOT_FOUND);
-      // Extrapolates the full product list from the Pantry details
-      const { products: fullList } = pantry;
 
       // If seacrh string is not defined or empty
       if (!searchStr) {
         // Fetches all the products in the pantry
-        setPantryProds(fullList);
+        setPantryProds(pantry);
         return;
       }
 
       // Filters the full list by name and sets the state
-      setPantryProds(fullList.filter((prod) => prod.name.includes(searchStr)));
+      setPantryProds(pantry.filter((prod) => prod.name.includes(searchStr)));
     } catch (err) {
       showAlert(err.message);
     }

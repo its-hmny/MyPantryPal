@@ -34,14 +34,20 @@ const WelcomeView: React.FC = () => {
   // -----------------------------------------------------------------
   const setup = async () => {
     try {
-      const gl = await await database.query(`SELECT * FROM ${DB_TABLES.GROCERY_LIST}`);
-      const prods = await database.query(`SELECT * FROM ${DB_TABLES.PRODUCTS}`);
-      const qty = await database.query(`SELECT * FROM ${DB_TABLES.QUANTITIES}`);
+      const gl = (
+        await database.query(`SELECT * FROM ${DB_TABLES.GROCERY_LIST}`)
+      ).values;
+      const prods = (
+        await database.query(`SELECT * FROM ${DB_TABLES.PRODUCTS}`)
+      ).values;
+      const qty = (
+        await database.query(`SELECT * FROM ${DB_TABLES.QUANTITIES}`)
+      ).values;
       setTmp(`
 ${JSON.stringify(gl, undefined, 2)}
 
 ${JSON.stringify(
-  prods.values?.map((p) => {
+  prods?.map((p) => {
     delete p.img;
     return p;
   }),
@@ -49,7 +55,7 @@ ${JSON.stringify(
   2
 )}
 
-${JSON.stringify(qty.values, undefined, 2)}
+${JSON.stringify(qty, undefined, 2)}
       `);
     } catch (err) {
       showAlert(err.message);

@@ -6,7 +6,7 @@ import moment from "moment";
 import { useState, useEffect, useContext, createContext } from "react";
 import { useHistory } from "react-router";
 import { FormPayload } from "../components/UserForm";
-import { ERRORS } from "../data/enum";
+import { ERRORS, ROUTES } from "../data/enum";
 import { AuthUser } from "../data/interfaces";
 import { database, initDatabase } from "../utils/Database";
 import {
@@ -47,8 +47,6 @@ export const AuthProvider: React.FC = ({ children }) => {
   // -----------------------------------------------------------------
   // L o c a l   v a r s
   // -----------------------------------------------------------------
-  // Access the history stack of the browser/phone
-  const history = useHistory();
   // Helper function to present lert dialog to the user
   const [showAlert] = useIonAlert();
 
@@ -166,6 +164,9 @@ export const AuthProvider: React.FC = ({ children }) => {
       setUserData(defaultData);
       // Updates the data in local storage as well for the next time
       await purgeFromStorage("user_data");
+      // Doing so next time the Database will be restored to default
+      // data (empty table with schemas only)
+      await saveToStorage("dbConfig", { setupDone: false });
     } catch (err) {
       // Presents an error message to the user
       showAlert(ERRORS.GENERAL_ERROR);

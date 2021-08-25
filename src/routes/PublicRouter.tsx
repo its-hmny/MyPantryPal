@@ -54,6 +54,7 @@ const PublicRouter: React.FC = () => {
     <IonRouterOutlet>
       {publicRoutes}
       <Redirect exact from="/" to={ROUTES.SIGN_IN} />
+      <Route component={() => <Redirect to={ROUTES.SIGN_IN} />} />
     </IonRouterOutlet>
   );
 };

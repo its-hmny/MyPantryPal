@@ -19,7 +19,6 @@ import {
   IonText,
   IonTextarea,
   useIonAlert,
-  useIonLoading,
 } from "@ionic/react";
 import { save, close, qrCode } from "ionicons/icons";
 import { useState, useMemo } from "react";
@@ -52,8 +51,6 @@ const ProductForm: React.FC<Props> = ({ product, onSave, onDiscard }) => {
   // -----------------------------------------------------------------
   // Helper function to present an alert dialog to the user
   const [showAlert] = useIonAlert();
-  // Helper function to present a loding popup to the user
-  const [showLoading, dismissLoading] = useIonLoading();
 
   // Default values for the form
   const defaultValues = {
@@ -140,8 +137,6 @@ const ProductForm: React.FC<Props> = ({ product, onSave, onDiscard }) => {
    * @async
    */
   const onSubmit = async () => {
-    // Creates and renders the loading dialog/modal
-    showLoading("Loading...");
     try {
       const { name, description, barcode } = formData;
       if (!!name && !!barcode && !!description) {
@@ -154,9 +149,6 @@ const ProductForm: React.FC<Props> = ({ product, onSave, onDiscard }) => {
         message: err.message,
         buttons: ["Ok"],
       });
-    } finally {
-      // Removes the loading spinner
-      dismissLoading();
     }
   };
 

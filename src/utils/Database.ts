@@ -20,8 +20,6 @@ export let database: SQLiteDBConnection;
  * @async
  */
 export const initDatabase = async () => {
-  // TODO REMOVE
-  saveToStorage("dbConfig", { setupDone: false });
   // Create & setup a connection object
   const SQLite = new SQLiteConnection(CapacitorSQLite);
   const db = await SQLite.createConnection(
@@ -30,17 +28,42 @@ export const initDatabase = async () => {
     "no-encryption",
     1
   );
+
+  // If the schema has been already imported from JSON and so the database
+  // has been initialized this part is skipped since it overrides data
   const status = await readFromStorage<{ setupDone: boolean }>("dbConfig");
   if (!status?.setupDone) {
     // Import schema and default values
     await SQLite.importFromJson(JSON.stringify(DatabaseConfig));
-    saveToStorage("dbConfig", { setupDone: true });
+    // Write in local storage that the database has been correctly initialized
+    await saveToStorage("dbConfig", { setupDone: true });
   }
 
   // Open the database
   await db.open();
   // Update the shared instance
   database = db;
+};
+
+// ------------------------------------------------------------------
+// P a n t r y
+// ------------------------------------------------------------------
+/**
+ * TODO COMMENT
+ * @function
+ * @async
+ *
+ * @return {Promise<Product[] | undefined>}
+ */
+export const getPantryProduct = async () => {
+  const res = await database.query(`
+    SELECT * 
+    FROM ${DB_TABLES.QUANTITIES} q, ${DB_TABLES.PRODUCTS} p 
+    WHERE q.listId == "${USER_PANTRY_ID}" AND q.productId == p.id;
+  `);
+
+  // Then returns a comprehemsive payload interface compliant
+  return res.values as Product[];
 };
 
 // ------------------------------------------------------------------
@@ -54,10 +77,6 @@ export const initDatabase = async () => {
  * @return {Promise<GroceryList[] | undefined>}
  */
 export const getGroceryLists = async () => {
-  // Checks that the DB is open and working properly
-  const status = await database?.isDBOpen();
-  if (!!status && !!status.result) return;
-
   // Get a list of all the grocery list avaiaible
   const lists = (
     await database.query(`
@@ -92,10 +111,6 @@ export const getGroceryLists = async () => {
  * @return {Promise<GroceryList | undefined>}
  */
 export const getGroceryList = async (listId: string) => {
-  // Checks that the DB is open and working properly
-  const status = await database?.isDBOpen();
-  if (!!status && !!status.result) return;
-
   // Get a list of all the grocery list avaiaible
   const res = await database.query(`
     SELECT * FROM ${DB_TABLES.GROCERY_LIST}
@@ -105,7 +120,7 @@ export const getGroceryList = async (listId: string) => {
   if (!res.values || !res.values.length) return undefined;
 
   const list = res.values[0];
-  window.alert(JSON.stringify(list));
+
   // Now queries the products that are in it
   const products =
     (
@@ -116,7 +131,6 @@ export const getGroceryList = async (listId: string) => {
     `)
     ).values || [];
 
-  window.alert(JSON.stringify({ ...list, products }));
   // Then returns a comprehemsive payload interface compliant
   return { ...list, products } as GroceryList;
 };
@@ -129,10 +143,6 @@ export const getGroceryList = async (listId: string) => {
  * @return {Promise<any>}
  */
 export const insertGroceryList = async (list: Partial<GroceryList>) => {
-  // Checks that the DB is open and working properly
-  const status = await database?.isDBOpen();
-  if (!!status && !!status.result) return;
-
   // Destructures the list object
   const { name } = list;
   // Generate a uuid for the new list
@@ -154,10 +164,6 @@ export const insertGroceryList = async (list: Partial<GroceryList>) => {
  * @return {Promise<void>}
  */
 export const truncateGroceryList = async (listId: string) => {
-  // Checks that the DB is open and working properly
-  const status = await database?.isDBOpen();
-  if (!!status && !!status.result) return;
-
   // Removes all the entry with the same litId from the Quantities table
   await database.query(`
     DELETE FROM ${DB_TABLES.QUANTITIES}
@@ -174,10 +180,6 @@ export const truncateGroceryList = async (listId: string) => {
  * @return {Promise<void>}
  */
 export const deleteGroceryList = async (listId: string) => {
-  // Checks that the DB is open and working properly
-  const status = await database?.isDBOpen();
-  if (!!status && !!status.result) return;
-
   // Empties at first the grocery list
   await truncateGroceryList(listId);
   // Then removes it from its SQL Table
@@ -195,31 +197,27 @@ export const deleteGroceryList = async (listId: string) => {
  * @function
  * @async
  *
- * @return {Promise<void>}
+ * @return {Promise<string>} - Returns the new id
  */
 export const insertProduct = async (prod: Product) => {
-  // Checks that the DB is open and working properly
-  const status = await database?.isDBOpen();
-  if (!!status && !!status.result) return;
-
   // Destructures the list object
-  let { id, name, description, barcode, img } = prod;
+  const { name, description, barcode, img } = prod;
 
-  // If an id isn't provided then is generated
-  if (!id) {
-    const buffer = new Uint32Array(1);
-    window.crypto.getRandomValues(buffer);
-    id = buffer[0].toString();
-  }
+  // Id is autogenerated
+  const buffer = new Uint32Array(1);
+  window.crypto.getRandomValues(buffer);
+  const newId = buffer[0].toString();
 
   // Executes the query
   await database.query(`
     INSERT INTO ${DB_TABLES.PRODUCTS} (id, name, description, barcode, img)
     VALUES(
-      "${id}", "${name}", "${description}", 
+      "${newId}", "${name}", "${description}", 
       "${barcode}", ${img ? `"${img}"` : "NULL"}
     );
   `);
+
+  return newId;
 };
 
 /**
@@ -231,10 +229,6 @@ export const insertProduct = async (prod: Product) => {
  * @return {Promise<Product>}
  */
 export const getProduct = async (productId: string) => {
-  // Checks that the DB is open and working properly
-  const status = await database?.isDBOpen();
-  if (!!status && !!status.result) return;
-
   // Executes the query
   const res = await database.query(`
     SELECT * FROM ${DB_TABLES.PRODUCTS}
@@ -272,10 +266,6 @@ export const getProductsBy = async (key: "name" | "barcode", value: string) => {
  * @return {Promise<void>}
  */
 export const updateProduct = async (prod: Partial<Product>) => {
-  // Checks that the DB is open and working properly
-  const status = await database?.isDBOpen();
-  if (!!status && !!status.result) return;
-
   // Destructures the list object
   const { id, name, description, barcode, img } = prod;
   if (!!id) {

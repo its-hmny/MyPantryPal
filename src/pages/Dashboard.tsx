@@ -24,6 +24,7 @@ import {
   changeQuantitytyInList,
   getGroceryList,
   getGroceryLists,
+  getPantryProduct,
 } from "../utils/Database";
 
 /**
@@ -103,10 +104,10 @@ const DashboardView: React.FC = () => {
   // onViewMount it will fetch all the "running low" products
   useIonViewDidEnter(async () => {
     try {
-      const userPantry = await getGroceryList(USER_PANTRY_ID);
+      const userPantry = await getPantryProduct();
       if (userPantry === undefined) throw Error(ERRORS.PANTRY_NOT_FOUND);
       // Sorts the products by quantity
-      const sorted = userPantry.products.sort(
+      const sorted = userPantry.sort(
         (a, b) => (a.quantity ?? 0) - (b.quantity ?? 0)
       );
       const final = sorted.length > 4 ? sorted.slice(0, 4) : sorted;

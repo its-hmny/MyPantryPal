@@ -12,7 +12,6 @@ import {
   IonTitle,
   IonToolbar,
   useIonAlert,
-  useIonLoading,
   useIonViewWillEnter,
 } from "@ionic/react";
 import { add } from "ionicons/icons";
@@ -36,8 +35,6 @@ const MyGroceryListsView: React.FC = () => {
   // -----------------------------------------------------------------
   // Helper function to present an alert dialog to the user
   const [presentAlert] = useIonAlert();
-  // Helper function to present a loading dialog to the user
-  const [showLoading, dismissLoading] = useIonLoading();
 
   // -----------------------------------------------------------------
   // S t a t e
@@ -70,14 +67,11 @@ const MyGroceryListsView: React.FC = () => {
    * @param {Partial<GroceryList>} newList
    */
   const onListCreated = async (newList: Partial<GroceryList>) => {
-    showLoading("Adding your new list...");
     try {
       await insertGroceryList(newList);
       setGroceryLists(await getGroceryLists());
     } catch (err) {
       presentAlert(err.message);
-    } finally {
-      dismissLoading();
     }
   };
 

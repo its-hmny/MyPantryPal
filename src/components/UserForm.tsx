@@ -8,7 +8,6 @@ import {
   IonLabel,
   IonList,
   useIonAlert,
-  useIonLoading,
 } from "@ionic/react";
 import { useState } from "react";
 import { ERRORS } from "../data/enum";
@@ -57,8 +56,6 @@ const UserForm: React.FC<Props> = (props) => {
 
   // Helper function to present lert dialog to the user
   const [showAlert] = useIonAlert();
-  // Helper function to present a loding popup to the user
-  const [showLoading, dismissLoading] = useIonLoading();
 
   // Default values for the form
   const defaultFormValues = {
@@ -99,8 +96,6 @@ const UserForm: React.FC<Props> = (props) => {
    * @async
    */
   const submitWrapper = async () => {
-    // Creates and renders the loading dialog/modal
-    showLoading("Loading...");
     try {
       const { username, email, password } = formData;
       // Data validation, checks that all the field are defined
@@ -115,9 +110,6 @@ const UserForm: React.FC<Props> = (props) => {
         message: err.message,
         buttons: ["Ok"],
       });
-    } finally {
-      // Removes the loading spinner
-      dismissLoading();
     }
   };
 
