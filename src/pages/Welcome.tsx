@@ -5,6 +5,7 @@ import { IonContent, IonPage, setupConfig, useIonAlert } from "@ionic/react";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { DB_TABLES } from "../data/enum";
+import { Product } from "../data/interfaces";
 import { database, getGroceryLists, initDatabase } from "../utils/Database";
 
 /**
@@ -33,13 +34,20 @@ const WelcomeView: React.FC = () => {
   // -----------------------------------------------------------------
   const setup = async () => {
     try {
-      const gl = await getGroceryLists();
+      const gl = await await database.query(`SELECT * FROM ${DB_TABLES.GROCERY_LIST}`);
       const prods = await database.query(`SELECT * FROM ${DB_TABLES.PRODUCTS}`);
       const qty = await database.query(`SELECT * FROM ${DB_TABLES.QUANTITIES}`);
       setTmp(`
 ${JSON.stringify(gl, undefined, 2)}
 
-${JSON.stringify(prods.values, undefined, 2)}
+${JSON.stringify(
+  prods.values?.map((p) => {
+    delete p.img;
+    return p;
+  }),
+  undefined,
+  2
+)}
 
 ${JSON.stringify(qty.values, undefined, 2)}
       `);

@@ -7,8 +7,9 @@ import {
   SQLiteDBConnection,
 } from "@capacitor-community/sqlite";
 import DatabaseConfig, { USER_PANTRY_ID } from "../data/dbConfig";
-import { DB_TABLES, ERRORS } from "../data/enum";
+import { DB_TABLES } from "../data/enum";
 import { GroceryList, Product } from "../data/interfaces";
+import { readFromStorage, saveToStorage } from "./Storage";
 
 // The shared database instance
 export let database: SQLiteDBConnection;
@@ -19,10 +20,8 @@ export let database: SQLiteDBConnection;
  * @async
  */
 export const initDatabase = async () => {
-  // When in develpment mode doesn't open the DB always
-  const status = await database?.isDBOpen();
-  if (!!status && status.result) return;
-
+  // TODO REMOVE
+  saveToStorage("dbConfig", { setupDone: false });
   // Create & setup a connection object
   const SQLite = new SQLiteConnection(CapacitorSQLite);
   const db = await SQLite.createConnection(
@@ -31,8 +30,13 @@ export const initDatabase = async () => {
     "no-encryption",
     1
   );
-  // Import schema and default values
-  await SQLite.importFromJson(JSON.stringify(DatabaseConfig));
+  const status = await readFromStorage<{ setupDone: boolean }>("dbConfig");
+  if (!status?.setupDone) {
+    // Import schema and default values
+    await SQLite.importFromJson(JSON.stringify(DatabaseConfig));
+    saveToStorage("dbConfig", { setupDone: true });
+  }
+
   // Open the database
   await db.open();
   // Update the shared instance
@@ -51,7 +55,8 @@ export const initDatabase = async () => {
  */
 export const getGroceryLists = async () => {
   // Checks that the DB is open and working properly
-  if (!database?.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
+  const status = await database?.isDBOpen();
+  if (!!status && !!status.result) return;
 
   // Get a list of all the grocery list avaiaible
   const lists = (
@@ -88,7 +93,8 @@ export const getGroceryLists = async () => {
  */
 export const getGroceryList = async (listId: string) => {
   // Checks that the DB is open and working properly
-  if (!database?.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
+  const status = await database?.isDBOpen();
+  if (!!status && !!status.result) return;
 
   // Get a list of all the grocery list avaiaible
   const res = await database.query(`
@@ -96,9 +102,10 @@ export const getGroceryList = async (listId: string) => {
     WHERE id == "${listId}";
   `);
 
-  if (!res.values || !res.values[0]) return undefined;
+  if (!res.values || !res.values.length) return undefined;
 
   const list = res.values[0];
+  window.alert(JSON.stringify(list));
   // Now queries the products that are in it
   const products =
     (
@@ -109,6 +116,7 @@ export const getGroceryList = async (listId: string) => {
     `)
     ).values || [];
 
+  window.alert(JSON.stringify({ ...list, products }));
   // Then returns a comprehemsive payload interface compliant
   return { ...list, products } as GroceryList;
 };
@@ -122,7 +130,9 @@ export const getGroceryList = async (listId: string) => {
  */
 export const insertGroceryList = async (list: Partial<GroceryList>) => {
   // Checks that the DB is open and working properly
-  if (!database?.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
+  const status = await database?.isDBOpen();
+  if (!!status && !!status.result) return;
+
   // Destructures the list object
   const { name } = list;
   // Generate a uuid for the new list
@@ -145,7 +155,8 @@ export const insertGroceryList = async (list: Partial<GroceryList>) => {
  */
 export const truncateGroceryList = async (listId: string) => {
   // Checks that the DB is open and working properly
-  if (!database?.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
+  const status = await database?.isDBOpen();
+  if (!!status && !!status.result) return;
 
   // Removes all the entry with the same litId from the Quantities table
   await database.query(`
@@ -164,7 +175,8 @@ export const truncateGroceryList = async (listId: string) => {
  */
 export const deleteGroceryList = async (listId: string) => {
   // Checks that the DB is open and working properly
-  if (!database?.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
+  const status = await database?.isDBOpen();
+  if (!!status && !!status.result) return;
 
   // Empties at first the grocery list
   await truncateGroceryList(listId);
@@ -187,7 +199,9 @@ export const deleteGroceryList = async (listId: string) => {
  */
 export const insertProduct = async (prod: Product) => {
   // Checks that the DB is open and working properly
-  if (!database?.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
+  const status = await database?.isDBOpen();
+  if (!!status && !!status.result) return;
+
   // Destructures the list object
   let { id, name, description, barcode, img } = prod;
 
@@ -218,7 +232,9 @@ export const insertProduct = async (prod: Product) => {
  */
 export const getProduct = async (productId: string) => {
   // Checks that the DB is open and working properly
-  if (!database?.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
+  const status = await database?.isDBOpen();
+  if (!!status && !!status.result) return;
+
   // Executes the query
   const res = await database.query(`
     SELECT * FROM ${DB_TABLES.PRODUCTS}
@@ -239,8 +255,6 @@ export const getProduct = async (productId: string) => {
  * @return {Promise<Product[]>}
  */
 export const getProductsBy = async (key: "name" | "barcode", value: string) => {
-  // Checks that the DB is open and working properly
-  if (!database?.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
   // Executes the query
   const res = await database.query(`
     SELECT * FROM ${DB_TABLES.PRODUCTS}
@@ -259,7 +273,9 @@ export const getProductsBy = async (key: "name" | "barcode", value: string) => {
  */
 export const updateProduct = async (prod: Partial<Product>) => {
   // Checks that the DB is open and working properly
-  if (!database?.isDBOpen()) throw Error(ERRORS.DATABASE_ERROR);
+  const status = await database?.isDBOpen();
+  if (!!status && !!status.result) return;
+
   // Destructures the list object
   const { id, name, description, barcode, img } = prod;
   if (!!id) {

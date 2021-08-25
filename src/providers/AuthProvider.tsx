@@ -1,16 +1,12 @@
 // ------------------------------------------------------------------
 // I m p o r t s
 // ------------------------------------------------------------------
-import {
-  useIonAlert,
-  useIonLoading,
-  useIonViewWillLeave,
-} from "@ionic/react";
+import { useIonAlert, useIonViewWillLeave } from "@ionic/react";
 import moment from "moment";
 import { useState, useEffect, useContext, createContext } from "react";
 import { useHistory } from "react-router";
 import { FormPayload } from "../components/UserForm";
-import { ERRORS, ROUTES } from "../data/enum";
+import { ERRORS } from "../data/enum";
 import { AuthUser } from "../data/interfaces";
 import { database, initDatabase } from "../utils/Database";
 import {
@@ -55,8 +51,6 @@ export const AuthProvider: React.FC = ({ children }) => {
   const history = useHistory();
   // Helper function to present lert dialog to the user
   const [showAlert] = useIonAlert();
-  // Helper function to present a loading dialog to the user
-  const [showLoading, dismissLoading] = useIonLoading();
 
   // Temporary data used if no data is avaiable or the data has expired
   const defaultData = {
@@ -84,7 +78,6 @@ export const AuthProvider: React.FC = ({ children }) => {
    */
   const initAuthProvider = async () => {
     try {
-      showLoading("Loading previous data");
       // Init & setup the database
       await initDatabase();
 
@@ -93,23 +86,18 @@ export const AuthProvider: React.FC = ({ children }) => {
       // Retrieve the precedent data if existent
       const previousData = await readFromStorage<AuthData>("user_data");
 
-      // If the data doen't exist or the access token has expired, set the state
-      // as if the user has not been logged, (SignIn view)
-      if (!previousData || now.isAfter(moment.unix(previousData.expiresIn))) {
-        // Logs out the user
-        await logout();
-        return;
-      }
-
+      // If the data doen't exist sets the "not logged in" state
+      if (previousData === null) setUserData(defaultData);
+      // If the access token has expired log the user out
+      else if (now.isAfter(moment.unix(previousData.expiresIn))) await logout();
       // If the access token is still valid, loads the previous user
-      setUserData({
-        ...previousData,
-        isLoggedIn: true,
-      });
+      else
+        setUserData({
+          ...previousData,
+          isLoggedIn: true,
+        });
     } catch (err) {
       showAlert(err.message);
-    } finally {
-      dismissLoading();
     }
   };
 
@@ -173,23 +161,14 @@ export const AuthProvider: React.FC = ({ children }) => {
    * @async
    */
   const logout = async () => {
-    showLoading("Logging out...");
     try {
       // Resets the data to the default value
       setUserData(defaultData);
       // Updates the data in local storage as well for the next time
       await purgeFromStorage("user_data");
-      history.push(ROUTES.SIGN_IN);
     } catch (err) {
       // Presents an error message to the user
-      showAlert({
-        header: "Error",
-        message: ERRORS.GENERAL_ERROR,
-        buttons: ["Ok"],
-      });
-    } finally {
-      // Removes the loading spinner
-      dismissLoading();
+      showAlert(ERRORS.GENERAL_ERROR);
     }
   };
 

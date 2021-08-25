@@ -46,5 +46,5 @@ export const readFromStorage = async <T>(key: string) => {
  * @param {string} key
  */
 export const purgeFromStorage = async (key: string) => {
-  await Storage.remove({ key });
+  await Storage.set({ key, value: JSON.stringify(null) });
 };
