@@ -86,8 +86,6 @@ const MyPantryView: React.FC = () => {
     try {
       // Get the pantry details
       const pantry = await getPantryProduct();
-      // Does some error checking
-      if (pantry === undefined) throw Error(ERRORS.PANTRY_NOT_FOUND);
 
       // If seacrh string is not defined or empty
       if (!searchStr) {
@@ -147,7 +145,6 @@ const MyPantryView: React.FC = () => {
   // -----------------------------------------------------------------
   return (
     <IonPage>
-      {/* Page header maybe to be removed (TODO) */}
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="end" color="primary">

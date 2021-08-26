@@ -12,8 +12,9 @@ import {
   IonRouterLink,
   IonText,
 } from "@ionic/react";
+import { useHistory } from "react-router";
 import UserForm, { FormPayload } from "../components/UserForm";
-import { ROUTES } from "../data/enum";
+import { ROUTES, ROUTE_KEYS } from "../data/enum";
 import { useAuth } from "../providers/AuthProvider";
 import { signUp } from "../utils/WebService";
 
@@ -30,6 +31,8 @@ const SignUpView: React.FC = () => {
   // -----------------------------------------------------------------
   // L o c a l   v a r s
   // -----------------------------------------------------------------
+  // Access the history stack of the browser/phone
+  const history = useHistory();
   // Access the authProvider to authenticate the user
   const { authenticateUser } = useAuth();
 
@@ -85,7 +88,10 @@ const SignUpView: React.FC = () => {
             />
             <IonText>
               Alread have an account?{" "}
-              <IonRouterLink href={ROUTES.SIGN_IN} routerDirection="back">
+              <IonRouterLink
+                onClick={() => history.push(ROUTES.SIGN_IN)}
+                routerDirection="back"
+              >
                 Sign in
               </IonRouterLink>
             </IonText>

@@ -6,7 +6,7 @@ const DatabaseConfig = {
   database: "MyPantryPal",
   encrypted: false,
   version: 1,
-  mode: "full",
+  mode: "partial",
 
   tables: [
     {

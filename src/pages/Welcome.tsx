@@ -1,12 +1,11 @@
 // -----------------------------------------------------------------
 // I m p o r t s
 // -----------------------------------------------------------------
-import { IonContent, IonPage, setupConfig, useIonAlert } from "@ionic/react";
+import { IonContent, IonPage, useIonAlert } from "@ionic/react";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { DB_TABLES } from "../data/enum";
-import { Product } from "../data/interfaces";
-import { database, getGroceryLists, initDatabase } from "../utils/Database";
+import { database } from "../utils/Database";
 
 /**
  * Component that shows to the user a simple text with debugging

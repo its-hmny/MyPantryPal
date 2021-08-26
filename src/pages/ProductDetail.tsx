@@ -10,7 +10,10 @@ import { Product } from "../data/interfaces";
 import { getProduct, updateProduct } from "../utils/Database";
 
 /**
- * TODO COMMENTS
+ * This component shows to the user a Form in which the details
+ * about the product (id passed via URL) can be visualized and changed
+ * If the id isn't visualized then an error message is showed and the
+ * user is redirected to the previous page
  *
  * @component
  * @category Components
@@ -57,11 +60,11 @@ const ProductDetailView: React.FC = () => {
   /**
    * This function handles the update of the Product and, upon completion,
    * redirects then the user to the previous page. If an error occurs the user
-   * is showed an alert 
+   * is showed an alert
    * @function
    * @async
-   * 
-   * @param {Product} prod -  
+   *
+   * @param {Product} prod -
    */
   const handleProductUpdate = async (prod: Product) => {
     try {

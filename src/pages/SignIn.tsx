@@ -82,7 +82,7 @@ const SignInView: React.FC = () => {
             />
             <IonText>
               Not a member?{" "}
-              <IonRouterLink href={ROUTES.SIGN_UP} routerDirection="forward">
+              <IonRouterLink onClick={() => history.push(ROUTES.SIGN_UP)} routerDirection="forward">
                 Sign up
               </IonRouterLink>
             </IonText>

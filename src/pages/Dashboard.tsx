@@ -105,7 +105,6 @@ const DashboardView: React.FC = () => {
   useIonViewDidEnter(async () => {
     try {
       const userPantry = await getPantryProduct();
-      if (userPantry === undefined) throw Error(ERRORS.PANTRY_NOT_FOUND);
       // Sorts the products by quantity
       const sorted = userPantry.sort(
         (a, b) => (a.quantity ?? 0) - (b.quantity ?? 0)
@@ -139,8 +138,6 @@ const DashboardView: React.FC = () => {
 
         {/* My groceries list */}
         <UserGroceryList />
-
-        {/* TODO ADD MODAL OPENER TO SCAN PRODS */}
       </IonContent>
     </IonPage>
   );

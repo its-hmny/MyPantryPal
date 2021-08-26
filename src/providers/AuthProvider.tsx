@@ -8,7 +8,7 @@ import { useHistory } from "react-router";
 import { FormPayload } from "../components/UserForm";
 import { ERRORS, ROUTES } from "../data/enum";
 import { AuthUser } from "../data/interfaces";
-import { database, initDatabase } from "../utils/Database";
+import { database, initDatabase, truncateDatabase } from "../utils/Database";
 import {
   readFromStorage,
   saveToStorage,
@@ -164,9 +164,8 @@ export const AuthProvider: React.FC = ({ children }) => {
       setUserData(defaultData);
       // Updates the data in local storage as well for the next time
       await purgeFromStorage("user_data");
-      // Doing so next time the Database will be restored to default
-      // data (empty table with schemas only)
-      await saveToStorage("dbConfig", { setupDone: false });
+      // Restores the Database to default, wiping it clean
+      await truncateDatabase();
     } catch (err) {
       // Presents an error message to the user
       showAlert(ERRORS.GENERAL_ERROR);
