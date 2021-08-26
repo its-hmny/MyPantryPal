@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">My Pantry Pal</string>
+    <string name="title_activity_main">My Pantry Pal</string>
+    <string name="package_name">com.hmny.MyPantryPal</string>
+    <string name="custom_url_scheme">com.hmny.MyPantryPal</string>
+</resources>

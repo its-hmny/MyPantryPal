@@ -66,7 +66,6 @@ typings/
 *.tgz
 
 # Output of Ionic/Capacitor
-android
 build
 
 # Yarn Integrity file
