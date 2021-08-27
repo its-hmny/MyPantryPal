@@ -99,7 +99,7 @@ export const getAuthUser = async (accessToken: string) => {
 export const getProductsWithBarcode = async (
   accessToken: string,
   barcode: string
-): Promise<{ token: string; products: Product[] }> => {
+): Promise<{ token: null | string; products: Product[] }> => {
   // Send the credentials to the WebService
   const response = await fetch(`${baseUrl}/products?barcode=${barcode}`, {
     method: "GET",
@@ -109,8 +109,8 @@ export const getProductsWithBarcode = async (
 
   // If the user has been authenticated correctly
   if (response.status === 200) return await response.json();
-  // Else throws an Error
-  else throw Error(ERRORS.GENERAL_ERROR);
+  // Else returns empty response
+  else return { token: null, products: [] };
 };
 
 /**
