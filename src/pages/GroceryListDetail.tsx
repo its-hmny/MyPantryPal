@@ -79,7 +79,10 @@ const GroceryListDeatilsView: React.FC = () => {
    */
   const addQuantity = async (prod: Product, diff: number) => {
     try {
+      //  Updates the data in the Database
       await changeQuantitytyInList(listId, prod.id, diff);
+      // Fetches again the updated data
+      await getGroceryListDetails();
     } catch (err) {
       showAlert(err.message);
     }
