@@ -14,7 +14,7 @@ import {
 } from "@ionic/react";
 import { useHistory } from "react-router";
 import UserForm, { FormPayload } from "../components/UserForm";
-import { ROUTES, ROUTE_KEYS } from "../data/enum";
+import { ROUTES } from "../data/enum";
 import { useAuth } from "../providers/AuthProvider";
 import { signUp } from "../utils/WebService";
 

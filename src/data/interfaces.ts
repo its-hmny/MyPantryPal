@@ -94,7 +94,7 @@ export interface GroceryList {
 
 /**
  * Interface that to represent a Generic object, with a non specific shape
- * 
+ *
  * @interface
  * @alias GenericObject
  *

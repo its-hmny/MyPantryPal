@@ -15,7 +15,7 @@ import { database } from "../utils/Database";
  * @category Components
  * @subcategory View
  */
-const WelcomeView: React.FC = () => {
+const DebugView: React.FC = () => {
   // -----------------------------------------------------------------
   // L o c a l   v a r s
   // -----------------------------------------------------------------
@@ -81,4 +81,4 @@ ${JSON.stringify(qty, undefined, 2)}
   );
 };
 
-export default WelcomeView;
+export default DebugView;

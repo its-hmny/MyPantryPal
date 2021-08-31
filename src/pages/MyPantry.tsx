@@ -25,14 +25,10 @@ import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import ProductCards from "../components/ProductCards";
 import { USER_PANTRY_ID } from "../data/dbConfig";
-import { ERRORS, ROUTES } from "../data/enum";
+import { ROUTES } from "../data/enum";
 import { Product } from "../data/interfaces";
 import { useAuth } from "../providers/AuthProvider";
-import {
-  changeQuantitytyInList,
-  getGroceryList,
-  getPantryProduct,
-} from "../utils/Database";
+import { changeQuantitytyInList, getPantryProduct } from "../utils/Database";
 import AddProdctView from "./AddProduct";
 
 /**
@@ -56,13 +52,15 @@ const MyPantryView: React.FC = () => {
   // Helper function to present an alert dialog to the user
   const [showAlert] = useIonAlert();
 
-  // Only for scopes reasons
-  const closeModal = () => dismissModal();
   // Helper functions to open and dismiss a "Add Product" Modal view
   const [presentModal, dismissModal] = useIonModal(AddProdctView, {
     accessToken,
-    onComplete: closeModal,
-    onCancel: closeModal,
+    onComplete: (newProd: Product) => {
+      setPantryProds([newProd, ...pantryProducts]);
+      dismissModal();
+    },
+    // Arrow function only for scopes reasons
+    onCancel: () => dismissModal(),
   });
 
   // -----------------------------------------------------------------
@@ -124,7 +122,10 @@ const MyPantryView: React.FC = () => {
    */
   const addQuantity = async (prod: Product, diff: number) => {
     try {
+      // Changes the quantity in the local Database
       await changeQuantitytyInList(USER_PANTRY_ID, prod.id, diff);
+      // Refetches the list from the Database
+      await filterPantry()
     } catch (err) {
       showAlert(err.message);
     }

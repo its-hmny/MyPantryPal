@@ -43,7 +43,7 @@ import {
 // ------------------------------------------------------------------
 interface Props {
   accessToken: string;
-  onComplete: () => Promise<void> | void;
+  onComplete: (p: Product) => Promise<void> | void;
   onCancel: () => Promise<void> | void;
 }
 
@@ -191,7 +191,7 @@ const AddProdctView: React.FC<Props> = (props) => {
       // Then adds the product to the user pantry
       await changeQuantitytyInList(USER_PANTRY_ID, prod.id, prod.quantity ?? 1);
       // Calls the parent callback
-      await onComplete();
+      await onComplete(prod);
     } catch (err) {
       showAlert(err.message);
     }

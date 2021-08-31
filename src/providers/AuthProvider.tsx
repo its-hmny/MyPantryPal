@@ -4,9 +4,8 @@
 import { useIonAlert, useIonViewWillLeave } from "@ionic/react";
 import moment from "moment";
 import { useState, useEffect, useContext, createContext } from "react";
-import { useHistory } from "react-router";
 import { FormPayload } from "../components/UserForm";
-import { ERRORS, ROUTES } from "../data/enum";
+import { ERRORS } from "../data/enum";
 import { AuthUser } from "../data/interfaces";
 import { database, initDatabase, truncateDatabase } from "../utils/Database";
 import {
@@ -26,6 +25,7 @@ interface AuthData {
   expiresIn: number;
 }
 
+// The data/object provided to the consumers
 interface ProvidedData extends AuthData {
   authenticateUser: (data: FormPayload) => Promise<void>;
   updateUser: (patch: Partial<AuthUser>) => Promise<void>;
