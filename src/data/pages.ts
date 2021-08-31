@@ -11,7 +11,7 @@ import ProductDetailView from "../pages/ProductDetail";
 import SignInView from "../pages/SignIn";
 import SignUpView from "../pages/SignUp";
 import UserProfileView from "../pages/UserProfile";
-import WelcomeView from "../pages/Welcome";
+import DebugView from "../pages/Debug";
 
 import { ROUTES, ROUTE_KEYS } from "./enum";
 import { Page } from "./interfaces";
@@ -73,7 +73,7 @@ const PAGES: { publicPages: Page[]; privatePages: Page[] } = {
     {
       path: ROUTES.DEBUG,
       key: ROUTE_KEYS.DEBUG,
-      component: WelcomeView,
+      component: DebugView,
       icon: terminal,
     },
   ],

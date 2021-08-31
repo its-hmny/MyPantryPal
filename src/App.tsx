@@ -2,7 +2,6 @@
 // I m p o r t s
 // ------------------------------------------------------------------
 import { IonApp } from "@ionic/react";
-
 import { AuthProvider } from "./providers/AuthProvider";
 import RouteInitializer from "./routes/RouteInitializer";
 
