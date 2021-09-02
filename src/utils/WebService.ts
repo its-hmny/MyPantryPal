@@ -6,8 +6,7 @@ import { ERRORS } from "../data/enum";
 import { Product } from "../data/interfaces";
 
 // Since the WebService doesn't have CORS enabled this proxy setup whats needed
-const proxyServerUrl = "https://cors-anywhere.herokuapp.com/";
-const baseUrl = `${proxyServerUrl}https://lam21.modron.network`;
+const baseUrl = "https://lam21.modron.network";
 // Default headers common to each request
 const defaultHeaders = { "Content-Type": "application/json" };
 
