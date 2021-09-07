@@ -70,12 +70,12 @@ const PAGES: { publicPages: Page[]; privatePages: Page[] } = {
       component: UserProfileView,
       icon: person,
     },
-    {
-      path: ROUTES.DEBUG,
-      key: ROUTE_KEYS.DEBUG,
-      component: DebugView,
-      icon: terminal,
-    },
+    //{
+    //  path: ROUTES.DEBUG,
+    //  key: ROUTE_KEYS.DEBUG,
+    //  component: DebugView,
+    //  icon: terminal,
+    //},
   ],
 };
 
