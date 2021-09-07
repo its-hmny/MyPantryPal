@@ -99,6 +99,8 @@ const UserGroceryLists: React.FC<Props> = (props) => {
       );
       // Truncate the Grocery List to evaded
       await truncateGroceryList(id);
+      // Refetches the local data
+      setGroceryLists((await getGroceryLists()) ?? null);
     } catch (err) {
       showAlert(err.message);
     }
